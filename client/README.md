@@ -1,4 +1,4 @@
-# vote-smart
+# Game of Thrones - Season 8 Death Pool dApp
 
 ## Project setup
 ```
