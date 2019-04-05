@@ -1,4 +1,5 @@
 pragma solidity ^0.5.5;
+pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./GOTDeathPoolCommon.sol";
@@ -20,47 +21,61 @@ contract GOTDeathPoolTruth is Ownable {
 
   uint8 constant NumCharacters = 30;
 
-  GOTDeathPoolCommon.Prediction public truthState;
+  GOTDeathPoolCommon.Prediction public TruthState;
+  bool public TruthComplete;
 
   constructor()
     Ownable()
     public
   {
-    truthState.lastOnThrone = GOTDeathPoolCommon.Character.CerseiLannister;
-    truthState.firstToDie = GOTDeathPoolCommon.Character.NewCharacter;
-    truthState.lastToDie = GOTDeathPoolCommon.Character.NewCharacter;
+    TruthState.lastOnThrone = GOTDeathPoolCommon.Character.CerseiLannister;
+    TruthState.firstToDie = GOTDeathPoolCommon.Character.NewCharacter;
+    TruthState.lastToDie = GOTDeathPoolCommon.Character.NewCharacter;
+    TruthComplete = false;
+  }
+
+  function GetTruthState() public view returns (GOTDeathPoolCommon.Prediction memory) {
+    return TruthState;
   }
 
   function logFirstToDie(GOTDeathPoolCommon.Character character) public onlyOwner {
-    truthState.firstToDie = character;
+    TruthState.firstToDie = character;
   }
 
   function logLastToDie(GOTDeathPoolCommon.Character character) public onlyOwner {
-    truthState.lastToDie = character;
+    TruthState.lastToDie = character;
   }
 
   function logEpisode(bool[NumCharacters] memory deathState, uint8 episodeNumber, GOTDeathPoolCommon.Character throneOwner) public onlyOwner {
     for (uint8 i = 0; i < NumCharacters; i++) {
       if (deathState[i] == true) {
         // character dead
-        if (truthState.dies[i] == false) {
+        if (TruthState.dies[i] == false) {
           // character died this episode
-          truthState.dies[i] = true;
-          truthState.deathEpisode[i] = episodeNumber;
+          TruthState.dies[i] = true;
+          TruthState.deathEpisode[i] = episodeNumber;
         }
       }
       else {
         // character is alive
-        if (truthState.dies[i] == true) {
+        if (TruthState.dies[i] == true) {
           // character came back to life this episode
-          truthState.dies[i] = false;
+          TruthState.dies[i] = false;
           // wont update deathEpisode in case we want to give kudos anyway for guessing the original death
         }
       }
     }
 
-    if (truthState.lastOnThrone != throneOwner) {
-      truthState.lastOnThrone = throneOwner;
+    if (TruthState.lastOnThrone != throneOwner) {
+      TruthState.lastOnThrone = throneOwner;
     }
+  }
+
+  function incomplete() public onlyOwner {
+    TruthComplete = false;
+  }
+
+  function complete() public onlyOwner {
+    TruthComplete = true;
   }
 }

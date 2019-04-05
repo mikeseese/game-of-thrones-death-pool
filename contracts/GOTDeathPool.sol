@@ -1,4 +1,5 @@
 pragma solidity ^0.5.5;
+pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
@@ -11,7 +12,7 @@ contract GOTDeathPool is Ownable {
   using GOTDeathPoolCommon for GOTDeathPoolCommon.Character;
   using SafeERC20 for IERC20;
 
-  address private TruthContract;
+  GOTDeathPoolTruth private TruthContract;
   bool private _open;
   bool private _canClaim;
   bool private _ownerCanDisperse;
@@ -56,7 +57,7 @@ contract GOTDeathPool is Ownable {
   }
 
   modifier answersAvailable() {
-    require(false, "Answers are not available yet"); // TODO:
+    require(TruthContract.TruthComplete() == true, "Answers are not available yet");
     _;
   }
 
@@ -80,7 +81,7 @@ contract GOTDeathPool is Ownable {
     _;
   }
 
-  constructor(address truth, uint256 stakeRequired, IERC20 token, bool canDisperse)
+  constructor(GOTDeathPoolTruth truth, uint256 stakeRequired, IERC20 token, bool canDisperse)
     Ownable()
     public
   {
@@ -168,8 +169,7 @@ contract GOTDeathPool is Ownable {
     int16[] memory resultPoints = new int16[](_stakers.length);
     address[] memory resultAddresses = new address[](_stakers.length);
 
-    // TODO: get truth prediction
-    GOTDeathPoolCommon.Prediction memory truth;
+    GOTDeathPoolCommon.Prediction memory truth = TruthContract.GetTruthState();
 
     uint validStakers = 0;
     for (uint i = 0; i < _stakers.length; i++) {
