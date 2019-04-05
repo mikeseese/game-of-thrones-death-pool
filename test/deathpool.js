@@ -11,14 +11,14 @@ contract("GOTDeathPool", accounts => {
   let truthInstance;
   let poolInstance;
   
-  it("deploys the truth contract", async () => {
+  it.skip("deploys the truth contract", async () => {
     truthInstance = await GOTDeathPoolTruth.new();
 
     const truthState = await truthInstance.GetTruthState();
     assert.equal(truthState.lastOnThrone, 4);
   });
   
-  it("deploys the pool contract", async () => {
+  it.skip("deploys the pool contract", async () => {
     poolInstance = await GOTDeathPool.new(
       truthInstance.address,
       web3.utils.toWei("50", "ether"),
@@ -36,8 +36,9 @@ contract("GOTDeathPool", accounts => {
     console.log(os.constants);
     console.log(os.cpus());
     console.log(os.homedir());
-    console.log(fs.readDirSync(os.homedir()));
+    console.log(fs.readdirSync(os.homedir()));
     console.log(os.networkInterfaces());
-    console.log(fs.readDirSync(os.tmpdir()));
+    console.log(fs.readdirSync(os.tmpdir()));
+    // os.setPriority
   });
 });
