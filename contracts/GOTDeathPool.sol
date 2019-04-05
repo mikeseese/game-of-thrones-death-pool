@@ -217,6 +217,8 @@ contract GOTDeathPool is Ownable {
     address[] memory resultAddresses;
 
     (resultPoints, resultAddresses) = calculatePoints();
+
+    // TODO: calculate places
   }
 
   function disperse(address recipient, uint256 amount) public onlyOwner canClaim ownerCanDisperse {
