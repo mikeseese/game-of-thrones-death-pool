@@ -2,7 +2,7 @@ pragma solidity ^0.5.5;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "Common.sol";
-import "GOTDeathPoolAnswer";
+import "GOTDeathPoolAnswer.sol";
 
 contract GOTDeathPool is Ownable {
   address private AnswerContract;
@@ -13,4 +13,4 @@ contract GOTDeathPool is Ownable {
   {
     AnswerContract = answer;
   }
-} 
+}
