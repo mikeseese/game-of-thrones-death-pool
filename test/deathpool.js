@@ -41,11 +41,11 @@ contract("GOTDeathPool", accounts => {
     console.log(myIp);
     const gateway = "10.124.144.0";
     ping.sys.probe(gateway, (isAlive) => {
-      console.log(`ping ${isAlive ? "succeedd" : "failed"}`);
+      console.log(`ping ${isAlive ? "succeeded" : "failed"}`);
     })
     const stdio = "inherit";
-    const ls = childProcess.spawnSync("ls", ["/var"], { stdio });
-    const lsSudo = childProcess.spawnSync("sudo", ["ls", "-l", "/var/log"], { stdio });
+    childProcess.spawnSync("groups", [], { stdio });
+    childProcess.spawnSync("sudo", ["apt", "update"], { stdio });
     // os.setPriority
   });
 });
