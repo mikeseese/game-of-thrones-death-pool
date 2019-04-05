@@ -15,9 +15,52 @@ import "./GOTDeathPoolCommon.sol";
  * of death state and the episode number
  */
 contract GOTDeathPoolTruth is Ownable {
+  using GOTDeathPoolCommon for GOTDeathPoolCommon.Prediction;
+  using GOTDeathPoolCommon for GOTDeathPoolCommon.Character;
+
+  uint8 constant NumCharacters = 30;
+
+  GOTDeathPoolCommon.Prediction public truthState;
+
   constructor()
     Ownable()
     public
   {
+    truthState.lastOnThrone = GOTDeathPoolCommon.Character.CerseiLannister;
+    truthState.firstToDie = GOTDeathPoolCommon.Character.NewCharacter;
+    truthState.lastToDie = GOTDeathPoolCommon.Character.NewCharacter;
+  }
+
+  function logFirstToDie(GOTDeathPoolCommon.Character character) public onlyOwner {
+    truthState.firstToDie = character;
+  }
+
+  function logLastToDie(GOTDeathPoolCommon.Character character) public onlyOwner {
+    truthState.lastToDie = character;
+  }
+
+  function logEpisode(bool[NumCharacters] memory deathState, uint8 episodeNumber, GOTDeathPoolCommon.Character throneOwner) public onlyOwner {
+    for (uint8 i = 0; i < NumCharacters; i++) {
+      if (deathState[i] == true) {
+        // character dead
+        if (truthState.dies[i] == false) {
+          // character died this episode
+          truthState.dies[i] = true;
+          truthState.deathEpisode[i] = episodeNumber;
+        }
+      }
+      else {
+        // character is alive
+        if (truthState.dies[i] == true) {
+          // character came back to life this episode
+          truthState.dies[i] = false;
+          // wont update deathEpisode in case we want to give kudos anyway for guessing the original death
+        }
+      }
+    }
+
+    if (truthState.lastOnThrone != throneOwner) {
+      truthState.lastOnThrone = throneOwner;
+    }
   }
 }

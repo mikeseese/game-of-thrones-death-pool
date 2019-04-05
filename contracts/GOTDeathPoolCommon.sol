@@ -3,7 +3,7 @@ pragma solidity ^0.5.5;
 library GOTDeathPoolCommon {
   uint8 constant NumCharacters = 30;
 
-  enum Characters {
+  enum Character {
     JonSnow,
     DaenerysTargaryen,
     TyrionLannister,
@@ -39,8 +39,8 @@ library GOTDeathPoolCommon {
   struct Prediction {
     bool[NumCharacters] dies;
     uint8[NumCharacters] deathEpisode;
-    uint8 firstToDie;
-    uint8 lastToDie;
-    uint8 lastOnThrone;
+    Character firstToDie;
+    Character lastToDie;
+    Character lastOnThrone;
   }
 }

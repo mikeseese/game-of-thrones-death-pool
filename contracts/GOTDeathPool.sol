@@ -8,6 +8,7 @@ import "./GOTDeathPoolTruth.sol";
 
 contract GOTDeathPool is Ownable {
   using GOTDeathPoolCommon for GOTDeathPoolCommon.Prediction;
+  using GOTDeathPoolCommon for GOTDeathPoolCommon.Character;
   using SafeERC20 for IERC20;
 
   address private TruthContract;
@@ -120,9 +121,9 @@ contract GOTDeathPool is Ownable {
   function predict(
     bool[30] memory dies,
     uint8[30] memory deathEpisode,
-    uint8 firstToDie,
-    uint8 lastToDie,
-    uint8 lastOnThrone,
+    GOTDeathPoolCommon.Character firstToDie,
+    GOTDeathPoolCommon.Character lastToDie,
+    GOTDeathPoolCommon.Character lastOnThrone,
     string memory name
   )
     public
