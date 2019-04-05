@@ -1,5 +1,4 @@
 pragma solidity ^0.5.5;
-pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
@@ -107,7 +106,22 @@ contract GOTDeathPool is Ownable {
     _canClaim = true;
   }
 
-  function predict(GOTDeathPoolCommon.Prediction memory prediction) public predictionsOpen {
+  function predict(
+    bool[30] memory dies,
+    uint8[30] memory deathEpisode,
+    uint8 firstToDie,
+    uint8 lastToDie,
+    uint8 lastOnThrone
+  )
+    public
+    predictionsOpen
+  {
+    GOTDeathPoolCommon.Prediction memory prediction;
+    prediction.dies = dies;
+    prediction.deathEpisode = deathEpisode;
+    prediction.firstToDie = firstToDie;
+    prediction.lastToDie = lastToDie;
+    prediction.lastOnThrone = lastOnThrone;
     predictions[msg.sender] = prediction;
   }
 
