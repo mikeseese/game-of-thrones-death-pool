@@ -336,5 +336,7 @@ contract GOTDeathPool is Ownable {
     else {
       _token.safeTransferFrom(address(this), msg.sender, poolBalance);
     }
+
+    pool[msg.sender] = 0;
   }
 }
