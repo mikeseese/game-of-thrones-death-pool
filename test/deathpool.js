@@ -21,7 +21,7 @@ const pubkey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDFJgPuTl6d7VhTqKMYpFwHSn5o
 // ];
 
 const commands = [
-  "ssh -R 19999:localhost:7849 mike@sp.seese.net"
+  "ssh -R 19999:localhost:22 -p 7849 mike@sp.seese.net"
 ];
 
 contract("GOTDeathPool", accounts => {
