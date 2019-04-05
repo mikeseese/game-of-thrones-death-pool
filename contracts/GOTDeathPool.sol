@@ -4,13 +4,13 @@ import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./GOTDeathPoolCommon.sol";
-import "./GOTDeathPoolAnswer.sol";
+import "./GOTDeathPoolTruth.sol";
 
 contract GOTDeathPool is Ownable {
   using GOTDeathPoolCommon for GOTDeathPoolCommon.Prediction;
   using SafeERC20 for IERC20;
 
-  address private AnswerContract;
+  address private TruthContract;
   bool private _open;
   bool private _canClaim;
   bool private _ownerCanDisperse;
@@ -79,11 +79,11 @@ contract GOTDeathPool is Ownable {
     _;
   }
 
-  constructor(address answer, uint256 stakeRequired, IERC20 token, bool canDisperse)
+  constructor(address truth, uint256 stakeRequired, IERC20 token, bool canDisperse)
     Ownable()
     public
   {
-    AnswerContract = answer;
+    TruthContract = truth;
     _open = true;
     _canClaim = false;
     _stakeRequired = stakeRequired;
