@@ -88,7 +88,12 @@ contract GOTDeathPool is Ownable {
     _;
   }
 
-  constructor(GOTDeathPoolTruth truth, uint256 stakeRequired, IERC20 token, bool canDisperse)
+  constructor(
+    GOTDeathPoolTruth truth,
+    uint256 stakeRequired,
+    IERC20 token,
+    bool canDisperse
+  )
     Ownable()
     public
   {
