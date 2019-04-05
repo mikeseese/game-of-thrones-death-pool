@@ -2,35 +2,35 @@ pragma solidity ^0.5.5;
 
 library GOTDeathPoolCommon {
   enum Characters {
-    JonSnow
-    DaenerysTargaryen
-    TyrionLannister
-    AryaStark
-    CerseiLannister
-    SansaStark
-    BranStark
-    Varys
-    JaimeLannister
-    TheonGreyjoy
-    YaraGreyjoy
-    EuronGreyjoy
-    SamwellTarly
-    Gilly
-    BrienneOfTarth
-    DavosSeaworth
-    Qyburn
-    GreyWorm
-    Missandei
-    JorahMormont
-    TheHound
-    Bronn
-    Melisandre
-    TormundGiantsbane
-    BericDondarrion
-    GendryBaratheon
-    MeeraReed
-    TheNightKing
-    OtherKnownCharacter
+    JonSnow,
+    DaenerysTargaryen,
+    TyrionLannister,
+    AryaStark,
+    CerseiLannister,
+    SansaStark,
+    BranStark,
+    Varys,
+    JaimeLannister,
+    TheonGreyjoy,
+    YaraGreyjoy,
+    EuronGreyjoy,
+    SamwellTarly,
+    Gilly,
+    BrienneOfTarth,
+    DavosSeaworth,
+    Qyburn,
+    GreyWorm,
+    Missandei,
+    JorahMormont,
+    TheHound,
+    Bronn,
+    Melisandre,
+    TormundGiantsbane,
+    BericDondarrion,
+    GendryBaratheon,
+    MeeraReed,
+    TheNightKing,
+    OtherKnownCharacter,
     NewCharacter
   }
 
