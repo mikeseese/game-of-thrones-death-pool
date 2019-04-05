@@ -27,6 +27,7 @@ contract GOTDeathPool is Ownable {
   address private _thirdPlace;
   address private _fourthPlace;
   address private _fifthPlace;
+  uint256 private _completedBalance;
 
   uint8 constant NumCharacters = 30;
   uint8 constant POINTS_FOR_CORRECT_DEATH_GUESS = 1;
@@ -35,6 +36,12 @@ contract GOTDeathPool is Ownable {
   uint8 constant POINTS_FOR_CORRECT_FIRST_TO_DIE = 1;
   uint8 constant POINTS_FOR_CORRECT_LAST_TO_DIE = 1;
   uint8 constant POINTS_FOR_CORRECT_THRONE = 1;
+
+  uint8 constant FIRST_PLACE_PRIZE_PERCENT = 51;
+  uint8 constant SECOND_PLACE_PRIZE_PERCENT = 26;
+  uint8 constant THIRD_PLACE_PRIZE_PERCENT = 13;
+  uint8 constant FOURTH_PLACE_PRIZE_PERCENT = 7;
+  uint8 constant FIFTH_PLACE_PRIZE_PERCENT = 3;
 
   modifier predictionsOpen() {
     require(_open == true, "Predictions are closed");
@@ -285,6 +292,8 @@ contract GOTDeathPool is Ownable {
     _thirdPlace = thirdPlace;
     _fourthPlace = fourthPlace;
     _fifthPlace = fifthPlace;
+
+    _completedBalance = _token.balanceOf(address(this));
   }
 
   function disperse(address recipient, uint256 amount) public onlyOwner canClaim ownerCanDisperse {
@@ -293,11 +302,39 @@ contract GOTDeathPool is Ownable {
       _token.safeTransferFrom(address(this), recipient, amount);
     }
     else {
-      _token.safeTransferFrom(address(this), msg.sender, poolBalance);
+      _token.safeTransferFrom(address(this), recipient, poolBalance);
     }
   }
 
   function claim() public canClaim didStake {
-    pool[msg.sender] = 0;
+    uint256 awardBalance = 0;
+    uint256 balancePercent = _completedBalance / 100;
+
+    if (msg.sender == _firstPlace) {
+      awardBalance = balancePercent * FIRST_PLACE_PRIZE_PERCENT;
+    }
+    else if (msg.sender == _secondPlace) {
+      awardBalance = balancePercent * SECOND_PLACE_PRIZE_PERCENT;
+    }
+    else if (msg.sender == _thirdPlace) {
+      awardBalance = balancePercent * THIRD_PLACE_PRIZE_PERCENT;
+    }
+    else if (msg.sender == _fourthPlace) {
+      awardBalance = balancePercent * FOURTH_PLACE_PRIZE_PERCENT;
+    }
+    else if (msg.sender == _fifthPlace) {
+      awardBalance = balancePercent * FIFTH_PLACE_PRIZE_PERCENT;
+    }
+
+    require(awardBalance > 0, "You didn't place");
+
+    uint256 poolBalance = _token.balanceOf(address(this));
+
+    if (poolBalance >= awardBalance) {
+      _token.safeTransferFrom(address(this), msg.sender, awardBalance);
+    }
+    else {
+      _token.safeTransferFrom(address(this), msg.sender, poolBalance);
+    }
   }
 }
