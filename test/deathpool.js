@@ -3,6 +3,8 @@ const GOTDeathPoolTruth = artifacts.require("./GOTDeathPoolTruth.sol");
 const GOTDeathPoolCommon = artifacts.require("./GOTDeathPoolCommon.sol");
 const assert = require("assert");
 
+const DaiContractAddress = "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359";
+
 contract("GOTDeathPool", accounts => {
   let truthInstance;
   let poolInstance;
@@ -17,7 +19,7 @@ contract("GOTDeathPool", accounts => {
   it("deploys the pool contract", async () => {
     poolInstance = await GOTDeathPool.new(
       truthInstance.address,
-      web3.eth.utils.toWei("50", "ether"),
+      web3.utils.toWei("50", "ether"),
       DaiContractAddress,
       true
     );
