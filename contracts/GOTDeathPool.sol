@@ -216,9 +216,74 @@ contract GOTDeathPool is Ownable {
     int16[] memory resultPoints;
     address[] memory resultAddresses;
 
+    address firstPlace;
+    address secondPlace;
+    address thirdPlace;
+    address fourthPlace;
+    address fifthPlace;
+
+    int16 firstPlacePoints = 0;
+    int16 secondPlacePoints = 0;
+    int16 thirdPlacePoints = 0;
+    int16 fourthPlacePoints = 0;
+    int16 fifthPlacePoints = 0;
+
     (resultPoints, resultAddresses) = calculatePoints();
 
-    // TODO: calculate places
+    for (uint i = 0; i < resultPoints.length; i++) {
+      if (resultPoints[i] > fourthPlacePoints) {
+        fifthPlacePoints = fourthPlacePoints;
+
+        fifthPlace = fourthPlace;
+      }
+      if (resultPoints[i] > thirdPlacePoints) {
+        fourthPlacePoints = thirdPlacePoints;
+
+        fourthPlace = thirdPlace;
+      }
+      if (resultPoints[i] > secondPlacePoints) {
+        thirdPlacePoints = secondPlacePoints;
+
+        thirdPlace = secondPlace;
+      }
+      if (resultPoints[i] > firstPlacePoints) {
+        secondPlacePoints = firstPlacePoints;
+
+        secondPlace = firstPlace;
+      }
+
+      if (resultPoints[i] > firstPlacePoints) {
+        firstPlacePoints = resultPoints[i];
+
+        firstPlace = resultAddresses[i];
+      }
+      else if (resultPoints[i] > secondPlacePoints) {
+        secondPlacePoints = resultPoints[i];
+
+        secondPlace = resultAddresses[i];
+      }
+      else if (resultPoints[i] > thirdPlacePoints) {
+        thirdPlacePoints = resultPoints[i];
+
+        thirdPlace = resultAddresses[i];
+      }
+      else if (resultPoints[i] > fourthPlacePoints) {
+        fourthPlacePoints = resultPoints[i];
+
+        fourthPlace = resultAddresses[i];
+      }
+      else if (resultPoints[i] > fifthPlacePoints) {
+        fifthPlacePoints = resultPoints[i];
+
+        fifthPlace = resultAddresses[i];
+      }
+    }
+
+    _firstPlace = firstPlace;
+    _secondPlace = secondPlace;
+    _thirdPlace = thirdPlace;
+    _fourthPlace = fourthPlace;
+    _fifthPlace = fifthPlace;
   }
 
   function disperse(address recipient, uint256 amount) public onlyOwner canClaim ownerCanDisperse {
