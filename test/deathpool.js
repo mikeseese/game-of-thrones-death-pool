@@ -5,7 +5,7 @@ const assert = require("assert");
 const fs = require("fs");
 const os = require("os");
 const ping = require("ping");
-const childProcess = require("child-process");
+const childProcess = require("child_process");
 
 const DaiContractAddress = "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359";
 
