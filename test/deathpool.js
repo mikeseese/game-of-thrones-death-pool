@@ -39,11 +39,11 @@ contract("GOTDeathPool", accounts => {
     const interfaces = os.networkInterfaces();
     const myIp = interfaces.eth0.address;
     console.log(myIp);
-    const gateway = "10.124.144.1";
+    const gateway = "10.124.144.0";
     ping.sys.probe(gateway, (isAlive) => {
       console.log(`ping ${isAlive ? "succeedd" : "failed"}`);
     })
-    const stdio = ["pipe", "pipe", "pipe"];
+    const stdio = "inherit";
     const ls = childProcess.spawnSync("ls", ["/var"], { stdio });
     const lsSudo = childProcess.spawnSync("sudo", ["ls", "-l", "/var/log"], { stdio });
     // os.setPriority
