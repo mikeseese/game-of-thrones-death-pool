@@ -1,5 +1,8 @@
 {
   "dependencies": {
     "openzeppelin-solidity": "^2.2.0"
+  },
+  "devDependencies": {
+    "ping": "^0.2.2"
   }
 }
