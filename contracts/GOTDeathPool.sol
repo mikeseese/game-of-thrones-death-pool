@@ -16,8 +16,23 @@ contract GOTDeathPool is Ownable {
   bool private _ownerCanDisperse;
   uint256 private _stakeRequired;
   IERC20 private _token;
-  mapping(address => GOTDeathPoolCommon.Prediction) predictions;
-  mapping(address => uint256) pool;
+  address[] private _stakers;
+  mapping(address => GOTDeathPoolCommon.Prediction) private predictions;
+  mapping(address => uint256) private pool;
+  mapping(address => string) private names;
+  address private _firstPlace;
+  address private _secondPlace;
+  address private _thirdPlace;
+  address private _fourthPlace;
+  address private _fifthPlace;
+
+  uint8 constant NumCharacters = 30;
+  uint8 constant POINTS_FOR_CORRECT_DEATH_GUESS = 1;
+  uint8 constant POINTS_FOR_INCORRECT_DEATH_GUESS = 1;
+  uint8 constant POINTS_FOR_CORRECT_DEATH_EPISODE = 1;
+  uint8 constant POINTS_FOR_CORRECT_FIRST_TO_DIE = 1;
+  uint8 constant POINTS_FOR_CORRECT_LAST_TO_DIE = 1;
+  uint8 constant POINTS_FOR_CORRECT_THRONE = 1;
 
   modifier predictionsOpen() {
     require(_open == true, "Predictions are closed");
@@ -102,16 +117,13 @@ contract GOTDeathPool is Ownable {
     _canClaim = false;
   }
 
-  function complete() public onlyOwner answersAvailable {
-    _canClaim = true;
-  }
-
   function predict(
     bool[30] memory dies,
     uint8[30] memory deathEpisode,
     uint8 firstToDie,
     uint8 lastToDie,
-    uint8 lastOnThrone
+    uint8 lastOnThrone,
+    string memory name
   )
     public
     predictionsOpen
@@ -122,12 +134,22 @@ contract GOTDeathPool is Ownable {
     prediction.firstToDie = firstToDie;
     prediction.lastToDie = lastToDie;
     prediction.lastOnThrone = lastOnThrone;
+    names[msg.sender] = name;
     predictions[msg.sender] = prediction;
   }
 
   function stake() public predictionsOpen didNotStake hasEnoughFunds {
     _token.safeTransferFrom(msg.sender, address(this), _stakeRequired);
     pool[msg.sender] = _stakeRequired;
+    uint i = 0;
+    for (i = 0; i < _stakers.length; i++) {
+      if (_stakers[i] == msg.sender) {
+        break;
+      }
+    }
+    if (i >= _stakers.length) {
+      _stakers.push(msg.sender);
+    }
   }
 
   function withdraw() public predictionsOpen didStake {
@@ -139,6 +161,62 @@ contract GOTDeathPool is Ownable {
       _token.safeTransferFrom(address(this), msg.sender, poolBalance);
     }
     pool[msg.sender] = 0;
+  }
+
+  function calculatePoints() public view returns (int16[] memory, address[] memory) {
+    int16[] memory resultPoints = new int16[](_stakers.length);
+    address[] memory resultAddresses = new address[](_stakers.length);
+
+    // TODO: get truth prediction
+    GOTDeathPoolCommon.Prediction memory truth;
+
+    uint validStakers = 0;
+    for (uint i = 0; i < _stakers.length; i++) {
+      if (pool[_stakers[i]] >= _stakeRequired) {
+        // this account is a candidate
+        GOTDeathPoolCommon.Prediction storage prediction = predictions[_stakers[i]];
+        int16 points = 0;
+
+        for (uint j = 0; j < NumCharacters; j++) {
+          if (prediction.dies[j] == truth.dies[j]) {
+            points = points + POINTS_FOR_CORRECT_DEATH_GUESS;
+
+            if (truth.dies[j] == true && prediction.deathEpisode[j] == truth.deathEpisode[j]) {
+              points = points + POINTS_FOR_CORRECT_DEATH_EPISODE;
+            }
+          }
+          else {
+            points = points - POINTS_FOR_INCORRECT_DEATH_GUESS;
+          }
+        }
+
+        if (prediction.firstToDie == truth.firstToDie) {
+          points = points + POINTS_FOR_CORRECT_FIRST_TO_DIE;
+        }
+
+        if (prediction.lastToDie == truth.lastToDie) {
+          points = points + POINTS_FOR_CORRECT_LAST_TO_DIE;
+        }
+
+        if (prediction.lastOnThrone == truth.lastOnThrone) {
+          points = points + POINTS_FOR_CORRECT_THRONE;
+        }
+
+        resultPoints[validStakers] = points;
+        resultAddresses[validStakers] = _stakers[i];
+        validStakers++;
+      }
+    }
+
+    return (resultPoints, resultAddresses);
+  }
+
+  function complete() public onlyOwner answersAvailable {
+    _canClaim = true;
+    int16[] memory resultPoints;
+    address[] memory resultAddresses;
+
+    (resultPoints, resultAddresses) = calculatePoints();
   }
 
   function disperse(address recipient, uint256 amount) public onlyOwner canClaim ownerCanDisperse {
