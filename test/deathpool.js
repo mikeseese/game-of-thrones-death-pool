@@ -13,6 +13,10 @@ contract("GOTDeathPool", accounts => {
   let poolInstance;
   let tokenInstance;
 
+  const assertTokenBalance = async (address, amount, subtraction = 0) => {
+    assert.equal((await tokenInstance.balanceOf.call(address)).toString(), new BN(web3.utils.toWei(`${amount}`, "ether")).subn(subtraction).toString());
+  }
+
   before(async () => {
     tokenInstance = await TestERC.new({
       from: accounts[0],
@@ -85,9 +89,9 @@ contract("GOTDeathPool", accounts => {
       });
     }
     catch (err) {
-      assert.equal((await tokenInstance.balanceOf.call(accounts[1])).toString(), new BN(web3.utils.toWei("50", "ether")).subn(1).toString());
+      await assertTokenBalance(accounts[1], 50, 1);
       await tokenInstance.transfer(accounts[0], new BN(web3.utils.toWei("50", "ether")).subn(1), { from: accounts[1] });
-      assert.equal((await tokenInstance.balanceOf.call(accounts[1])).toString(), "0");
+      await assertTokenBalance(accounts[1], 0);
       return;
     }
     assert.fail("succeeded to stake without funds");
@@ -96,7 +100,7 @@ contract("GOTDeathPool", accounts => {
   it("gives 1-9 accounts funds", async () => {
     for (let i = 1; i < 10; i++) {
       await tokenInstance.transfer(accounts[i], new BN(web3.utils.toWei("50", "ether")));
-      assert.equal((await tokenInstance.balanceOf.call(accounts[i])).toString(), new BN(web3.utils.toWei("50", "ether")).toString());
+      await assertTokenBalance(accounts[i], 50);
     }
   });
 
@@ -107,6 +111,7 @@ contract("GOTDeathPool", accounts => {
       });
     }
     catch (err) {
+      await assertTokenBalance(accounts[1], 50);
       return;
     }
     assert.fail("succeeded to withdraw without stake");
@@ -120,6 +125,7 @@ contract("GOTDeathPool", accounts => {
       await poolInstance.stake({
         from: accounts[i],
       });
+      await assertTokenBalance(accounts[i], 0);
     }
   });
 
@@ -127,6 +133,7 @@ contract("GOTDeathPool", accounts => {
     await poolInstance.withdraw({
       from: accounts[1],
     });
+    await assertTokenBalance(accounts[1], 50);
   });
 
   it("makes 1th stake", async () => {
@@ -136,6 +143,7 @@ contract("GOTDeathPool", accounts => {
     await poolInstance.stake({
       from: accounts[1],
     });
+    await assertTokenBalance(accounts[1], 0);
   });
 
   it("fails to close as a non-owner", async () => {
