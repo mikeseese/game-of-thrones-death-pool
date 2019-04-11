@@ -1,6 +1,6 @@
 const GOTDeathPool = artifacts.require("GOTDeathPool.sol");
 const GOTDeathPoolTruth = artifacts.require("GOTDeathPoolTruth.sol");
-const TestERC = artifacts.require("SimpleToken.sol");
+const SimpleToken = artifacts.require("SimpleToken.sol");
 const assert = require("assert");
 const BN = require("bn.js");
 
@@ -17,8 +17,37 @@ contract("GOTDeathPool", accounts => {
     assert.equal((await tokenInstance.balanceOf.call(address)).toString(), new BN(web3.utils.toWei(`${amount}`, "ether")).subn(subtraction).toString());
   }
 
+  const assertTokenBalanceGte = async (address, amount, subtraction = 0) => {
+    assert((await tokenInstance.balanceOf.call(address)).gte(new BN(web3.utils.toWei(`${amount}`, "ether")).subn(subtraction)));
+  }
+
+  const sortedLeaderboard = async () => {
+    const { 0: points, 1: addresses } = await poolInstance.calculatePoints.call();
+    const data = [];
+    for (let i = 0; i < points.length; i++) {
+      data.push({
+        points: points[i],
+        address: addresses[i],
+      });
+    }
+
+    data.sort((a, b) => b.points.sub(a.points));
+
+    return data;
+  }
+
+  const displayLeaderboard = async () => {
+    const leadeboard = await sortedLeaderboard();
+
+    let leaderboardString = "";
+    for (let i = 0; i < leadeboard.length; i++) {
+      leaderboardString += `${await poolInstance.getName.call(leadeboard[i].address)} - ${leadeboard[i].address} (${leadeboard[i].points.toString()}), `;
+    }
+    console.log(leaderboardString);
+  }
+
   before(async () => {
-    tokenInstance = await TestERC.new({
+    tokenInstance = await SimpleToken.new({
       from: accounts[0],
     });
   });
@@ -54,7 +83,7 @@ contract("GOTDeathPool", accounts => {
         predictions[i].lastOnThrone,
         predictions[i].name,
         {
-          from: accounts[0],
+          from: accounts[i],
         }
       );
     }
@@ -146,6 +175,20 @@ contract("GOTDeathPool", accounts => {
     await assertTokenBalance(accounts[1], 0);
   });
 
+  it("updates 1th prediction", async () => {
+    await poolInstance.predict(
+      predictions[1].dies,
+      predictions[1].deathEpisode,
+      predictions[1].firstToDie,
+      predictions[1].lastToDie,
+      predictions[1].lastOnThrone,
+      predictions[1].name,
+      {
+        from: accounts[1],
+      }
+    );
+  });
+
   it("fails to close as a non-owner", async () => {
     try {
       await poolInstance.close({
@@ -170,7 +213,40 @@ contract("GOTDeathPool", accounts => {
     }
   });
 
-  it("logs episode", async () => {
+  it("fails to withdraw after rounds closed", async () => {
+    try {
+      await poolInstance.withdraw({
+        from: accounts[1],
+      });
+    }
+    catch (err) {
+      await assertTokenBalance(accounts[1], 0);
+      return;
+    }
+    assert.fail("succeeded to withdraw without stake");
+  });
+
+  it("fails to update 1th prediction after rounds closed", async () => {
+    try {
+      await poolInstance.predict(
+        predictions[1].dies,
+        predictions[1].deathEpisode,
+        predictions[1].firstToDie,
+        predictions[1].lastToDie,
+        predictions[1].lastOnThrone,
+        predictions[1].name,
+        {
+          from: accounts[1],
+        }
+      );
+    }
+    catch (err) {
+      return;
+    }
+    assert.fail("updated prediction after rounds closed");
+  });
+
+  it("executes episodes 1-5, can calculate ongoing leaderboards", async () => {
     const throneOccupants = [
       4,
       4,
@@ -180,7 +256,7 @@ contract("GOTDeathPool", accounts => {
       1
     ];
 
-    for (let episode = 1; episode <= 6; episode++) {
+    for (let episode = 1; episode <= 5; episode++) {
       const deathState = predictions[0].deathEpisode.map((deathEpisode) => {
         return deathEpisode > 0 && deathEpisode <= episode;
       });
@@ -188,17 +264,182 @@ contract("GOTDeathPool", accounts => {
       await truthInstance.logEpisode(
         deathState,
         episode,
-        throneOccupants[episode -1],
+        throneOccupants[episode - 1],
         {
           from: accounts[0],
         },
       );
+
+      await displayLeaderboard();
     }
   });
 
-  // complete
+  it("fails to complete pool before truth is complete", async () => {
+    try {
+      await poolInstance.complete({
+        from: accounts[0],
+      });
+    }
+    catch (err) {
+      assert.equal(await truthInstance.TruthComplete.call(), false);
+      return;
+    }
+    assert.fail("succeeded to complete even though truth should be incomplete");
+  });
 
-  // disperse
+  it("executes episode 6, can calculate ongoing leaderboards", async () => {
+    const throneOccupants = [
+      4,
+      4,
+      7,
+      2,
+      0,
+      1
+    ];
 
-  // claim
+    const deathState = predictions[0].deathEpisode.map((deathEpisode) => {
+      return deathEpisode > 0 && deathEpisode <= 6;
+    });
+
+    await truthInstance.logEpisode(
+      deathState,
+      6,
+      throneOccupants[6 - 1],
+      {
+        from: accounts[0],
+      },
+    );
+
+    await displayLeaderboard();
+  });
+
+  it("fails to disperse money before complete", async () => {
+    try {
+      await poolInstance.disperse(accounts[1], new BN(web3.utils.toWei("1", "ether")), {
+        from: accounts[0],
+      });
+    }
+    catch (err) {
+      await assertTokenBalance(accounts[1], 0);
+      return;
+    }
+    assert.fail("succeeded to disperse funds even though pool is not complete yet");
+  });
+
+  it("completes truth", async () => {
+    await truthInstance.complete();
+  });
+
+  it("incompletes truth", async () => {
+    await truthInstance.incomplete();
+  });
+
+  it("fails to complete pool before truth is complete", async () => {
+    try {
+      await poolInstance.complete({
+        from: accounts[0],
+      });
+    }
+    catch (err) {
+      assert.equal(await truthInstance.TruthComplete.call(), false);
+      return;
+    }
+    assert.fail("succeeded to complete even though truth should be incomplete");
+  });
+
+  it("completes truth", async () => {
+    await truthInstance.complete();
+  });
+
+  it("fails to claim before complete", async () => {
+    const leaderboard = await sortedLeaderboard();
+    try {
+      await poolInstance.claim({
+        from: leaderboard[0].address,
+      });
+    }
+    catch (err) {
+      await assertTokenBalance(leaderboard[0].address, 0);
+      return;
+    }
+    assert.fail("claimed before completing");
+  });
+
+  it("completes pool", async () => {
+    await poolInstance.complete();
+  });
+
+  it("fails to claim while not placing", async () => {
+    const leaderboard = await sortedLeaderboard();
+    try {
+      await poolInstance.claim({
+        from: leaderboard[5].address,
+      });
+    }
+    catch (err) {
+      await assertTokenBalance(leaderboard[5].address, 0);
+      return;
+    }
+    assert.fail("claimed when not placing");
+  });
+
+  it("3rd place claims", async () => {
+    const awards = [
+      229,
+      117,
+      58,
+      31,
+      13
+    ];
+
+    const leaderboard = await sortedLeaderboard();
+
+    await poolInstance.claim({
+      from: leaderboard[2].address,
+    });
+    await assertTokenBalanceGte(leaderboard[2].address, awards[2]);
+  });
+  
+  it("disperse some funds to 1st account", async() => {
+    const balanceBefore = await tokenInstance.balanceOf.call(accounts[1]);
+    await poolInstance.disperse(accounts[1], web3.utils.toWei("1", "ether"));
+    const balanceAfter = await tokenInstance.balanceOf.call(accounts[1]);
+    assert.equal(balanceAfter.toString(), balanceBefore.add(new BN(web3.utils.toWei("1", "ether"))).toString());
+  });
+
+  it("3rd place fails to claim a second time", async () => {
+    const leaderboard = await sortedLeaderboard();
+
+    const balanceBefore = await tokenInstance.balanceOf.call(leaderboard[2].address);
+    try {
+      await poolInstance.claim({
+        from: leaderboard[2].address,
+      });
+    }
+    catch (err) {
+      const balanceAfter = await tokenInstance.balanceOf.call(leaderboard[2].address);
+      assert.equal(balanceAfter.toString(), balanceBefore.toString());
+      return;
+    }
+    assert.fail("3rd place succeeded to claim a second time");
+  });
+
+  it("1st and 2nd places claim", async () => {
+    const awards = [
+      229,
+      117,
+      58,
+      31,
+      13
+    ];
+
+    const leaderboard = await sortedLeaderboard();
+
+    for (let i = 0; i < 2; i++) {
+      await poolInstance.claim({
+        from: leaderboard[i].address,
+      });
+      await assertTokenBalanceGte(leaderboard[i].address, awards[i]);
+    }
+  });
 });

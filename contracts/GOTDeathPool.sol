@@ -22,12 +22,13 @@ contract GOTDeathPool is Ownable {
   mapping(address => GOTDeathPoolCommon.Prediction) private predictions;
   mapping(address => uint256) private pool;
   mapping(address => string) private names;
-  address private _firstPlace;
-  address private _secondPlace;
-  address private _thirdPlace;
-  address private _fourthPlace;
-  address private _fifthPlace;
-  uint256 private _completedBalance;
+  mapping(address => bool) private claimed;
+  address public firstPlace;
+  address public secondPlace;
+  address public thirdPlace;
+  address public fourthPlace;
+  address public fifthPlace;
+  uint256 public completedBalance;
 
   uint8 constant NumCharacters = 30;
   uint8 constant POINTS_FOR_CORRECT_DEATH_GUESS = 1;
@@ -58,6 +59,11 @@ contract GOTDeathPool is Ownable {
     _;
   }
 
+  modifier isIncomplete() {
+    require(_canClaim == false, "The pool has already been completed");
+    _;
+  }
+
   modifier noStakers() {
     require(_token.balanceOf(address(this)) == 0, "There is some stake left in the pool");
     _;
@@ -70,6 +76,11 @@ contract GOTDeathPool is Ownable {
 
   modifier didStake() {
     require(pool[msg.sender] >= _stakeRequired, "You don't have any funds in the pool");
+    _;
+  }
+
+  modifier didNotClaim() {
+    require(claimed[msg.sender] == false, "You already claimed!");
     _;
   }
 
@@ -119,6 +130,10 @@ contract GOTDeathPool is Ownable {
 
   function ownerCanDisperseFunds() public view returns(bool) {
     return _ownerCanDisperse;
+  }
+
+  function getName(address a) public view returns(string memory) {
+    return names[a];
   }
 
   function open() public onlyOwner {
@@ -224,7 +239,7 @@ contract GOTDeathPool is Ownable {
     return (resultPoints, resultAddresses);
   }
 
-  function complete() public onlyOwner answersAvailable {
+  function complete() public onlyOwner answersAvailable isIncomplete {
     _canClaim = true;
     int16[] memory resultPoints;
     address[] memory resultAddresses;
@@ -311,7 +326,7 @@ contract GOTDeathPool is Ownable {
     }
   }
 
-  function claim() public canClaim didStake {
+  function claim() public canClaim didStake didNotClaim {
     uint256 awardBalance = 0;
     uint256 balancePercent = _completedBalance / 100;
 
@@ -342,6 +357,6 @@ contract GOTDeathPool is Ownable {
       _token.safeTransfer(msg.sender, poolBalance);
     }
 
-    pool[msg.sender] = 0;
+    claimed[msg.sender] = true;
   }
 }
