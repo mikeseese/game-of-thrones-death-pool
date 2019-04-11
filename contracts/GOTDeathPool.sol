@@ -169,10 +169,10 @@ contract GOTDeathPool is Ownable {
   function withdraw() public predictionsOpen didStake {
     uint256 poolBalance = _token.balanceOf(address(this));
     if (poolBalance >= _stakeRequired) {
-      _token.safeTransferFrom(address(this), msg.sender, _stakeRequired);
+      _token.safeTransfer(msg.sender, _stakeRequired);
     }
     else {
-      _token.safeTransferFrom(address(this), msg.sender, poolBalance);
+      _token.safeTransfer(msg.sender, poolBalance);
     }
     pool[msg.sender] = 0;
   }
