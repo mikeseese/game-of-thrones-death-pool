@@ -23,12 +23,12 @@ contract GOTDeathPool is Ownable {
   mapping(address => uint256) private pool;
   mapping(address => string) private names;
   mapping(address => bool) private claimed;
-  address public firstPlace;
-  address public secondPlace;
-  address public thirdPlace;
-  address public fourthPlace;
-  address public fifthPlace;
-  uint256 public completedBalance;
+  address public _firstPlace;
+  address public _secondPlace;
+  address public _thirdPlace;
+  address public _fourthPlace;
+  address public _fifthPlace;
+  uint256 public _completedBalance;
 
   uint8 constant NumCharacters = 30;
   uint8 constant POINTS_FOR_CORRECT_DEATH_GUESS = 1;
