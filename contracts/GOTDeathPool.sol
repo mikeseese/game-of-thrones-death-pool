@@ -304,10 +304,10 @@ contract GOTDeathPool is Ownable {
   function disperse(address recipient, uint256 amount) public onlyOwner canClaim ownerCanDisperse {
     uint256 poolBalance = _token.balanceOf(address(this));
     if (poolBalance >= amount) {
-      _token.safeTransferFrom(address(this), recipient, amount);
+      _token.safeTransfer(recipient, amount);
     }
     else {
-      _token.safeTransferFrom(address(this), recipient, poolBalance);
+      _token.safeTransfer(recipient, poolBalance);
     }
   }
 
@@ -336,10 +336,10 @@ contract GOTDeathPool is Ownable {
     uint256 poolBalance = _token.balanceOf(address(this));
 
     if (poolBalance >= awardBalance) {
-      _token.safeTransferFrom(address(this), msg.sender, awardBalance);
+      _token.safeTransfer(msg.sender, awardBalance);
     }
     else {
-      _token.safeTransferFrom(address(this), msg.sender, poolBalance);
+      _token.safeTransfer(msg.sender, poolBalance);
     }
 
     pool[msg.sender] = 0;
