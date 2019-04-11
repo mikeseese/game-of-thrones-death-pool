@@ -23,4 +23,4 @@ for (let i = 0; i < 10; i++) {
   }
 }
 
-fs.writeFileSync("predictions.js", `module.exports = ${JSON.stringify(predictions)};`, { encoding: "utf8" });
+fs.writeFileSync("test/predictions.js", `module.exports = ${JSON.stringify(predictions)};`, { encoding: "utf8" });
