@@ -64,8 +64,8 @@ contract("GOTDeathPool", accounts => {
   it("deploys the pool contract", async () => {
     poolInstance = await GOTDeathPool.new(
       truthInstance.address,
-      new BN(web3.utils.toWei("50", "ether")),
       tokenInstance.address,
+      new BN(web3.utils.toWei("50", "ether")),
       true,
       false,
       {

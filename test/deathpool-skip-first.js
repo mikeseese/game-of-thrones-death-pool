@@ -32,16 +32,6 @@ contract("GOTDeathPool Skips First Episode", accounts => {
     return data;
   }
 
-  const displayLeaderboard = async () => {
-    const leadeboard = await sortedLeaderboard();
-
-    let leaderboardString = "";
-    for (let i = 0; i < leadeboard.length; i++) {
-      leaderboardString += `${await poolInstance.getName.call(leadeboard[i].address)} - ${leadeboard[i].address} (${leadeboard[i].points.toString()}), `;
-    }
-    console.log(leaderboardString);
-  }
-
   before(async () => {
     tokenInstance = await SimpleToken.new({
       from: accounts[0],
@@ -60,8 +50,8 @@ contract("GOTDeathPool Skips First Episode", accounts => {
   it("deploys the pool contract", async () => {
     poolInstance = await GOTDeathPool.new(
       truthInstance.address,
-      new BN(web3.utils.toWei("50", "ether")),
       tokenInstance.address,
+      new BN(web3.utils.toWei("50", "ether")),
       true,
       true,
       {

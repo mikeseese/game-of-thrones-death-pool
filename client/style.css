@@ -1,5 +1,5 @@
 
-.characters {
+#characters {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
@@ -11,12 +11,12 @@
   height: 50px;
 }
 
-.other_answers {
+#other_answers {
   display: flex;
   align-items: center;
   flex-direction: column;
 }
 
-.other_answers > div {
+#other_answers > div {
   height: 50px;
 }

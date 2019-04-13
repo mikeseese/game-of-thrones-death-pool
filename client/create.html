@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="style.css?v=0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript" src="web3.min.js?v=0"></script>
+    <script type="text/javascript" src="abi.js?v=0"></script>
+    <script type="text/javascript" src="bytecode.js?v=0"></script>
+    <script type="text/javascript" src="characters.js?v=0"></script>
+    <script type="text/javascript" src="script.js?v=0"></script>
+  </body>
+
+  <label for="truth_contract">Truth Contract Address</label><br/>
+  <input type="text" id="truth_contract" name="truth_contract" placeholder="0x" /><br/>
+  <br />
+  <br />
+  <label for="token_contract">ERC20 Token Contract Address</label><br/>
+  <input type="text" id="token_contract" name="token_contract" placeholder="0x" /><br/>
+  <br />
+  <br />
+  <label for="stake_required">Stake Amount (unit amount, not the "wei" amount; i.e. $20 would be '20' DAI)</label><br/>
+  <input type="text" id="stake_required" name="stake_required" placeholder="20" /><br/>
+  <br />
+  <br />
+  <label for="can_disperse">Owner Can Arbitrarily Disperse Funds After Pool Completed</label><br/>
+  <input type="checkbox" id="can_disperse" name="can_disperse" /><br />
+  <br />
+  <br />
+  <label for="skip_first_episode">Pool Starts Counting Points on Second Episode</label><br/>
+  <input type="checkbox" id="skip_first_episode" name="skip_first_episode" /><br />
+  <br />
+  <br />
+  <input type="button" value="Deploy" />
+</html>

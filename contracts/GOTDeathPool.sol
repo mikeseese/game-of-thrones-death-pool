@@ -102,8 +102,8 @@ contract GOTDeathPool is Ownable {
 
   constructor(
     GOTDeathPoolTruth truth,
-    uint256 stakeRequired,
     IERC20 token,
+    uint256 stakeRequired,
     bool canDisperse,
     bool skipsFirstEpisode
   )
@@ -113,8 +113,8 @@ contract GOTDeathPool is Ownable {
     TruthContract = truth;
     _open = true;
     _canClaim = false;
-    _stakeRequired = stakeRequired;
     _token = token;
+    _stakeRequired = stakeRequired;
     _ownerCanDisperse = canDisperse;
     _skipsFirstEpisode = skipsFirstEpisode;
   }
