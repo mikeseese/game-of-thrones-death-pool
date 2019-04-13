@@ -17,6 +17,7 @@ contract GOTDeathPool is Ownable {
   bool private _canClaim;
   bool private _ownerCanDisperse;
   uint256 private _stakeRequired;
+  bool public _skipsFirstEpisode;
   IERC20 private _token;
   address[] private _stakers;
   mapping(address => GOTDeathPoolCommon.Prediction) private predictions;
@@ -103,7 +104,8 @@ contract GOTDeathPool is Ownable {
     GOTDeathPoolTruth truth,
     uint256 stakeRequired,
     IERC20 token,
-    bool canDisperse
+    bool canDisperse,
+    bool skipsFirstEpisode
   )
     Ownable()
     public
@@ -114,6 +116,7 @@ contract GOTDeathPool is Ownable {
     _stakeRequired = stakeRequired;
     _token = token;
     _ownerCanDisperse = canDisperse;
+    _skipsFirstEpisode = skipsFirstEpisode;
   }
 
   function setStakeAmount(uint256 amount) public onlyOwner noStakers {
@@ -205,7 +208,15 @@ contract GOTDeathPool is Ownable {
         GOTDeathPoolCommon.Prediction storage prediction = predictions[_stakers[i]];
         int16 points = 0;
 
-        for (uint j = 0; j < NumCharacters; j++) {
+        for (uint j = 0; j < NumCharacters - 2; j++) {
+          if (
+            _skipsFirstEpisode == true &&
+            truth.dies[j] == true &&
+            truth.deathEpisode[j] == 1
+          ) {
+            continue;
+          }
+
           if (prediction.dies[j] == truth.dies[j]) {
             points = points + POINTS_FOR_CORRECT_DEATH_GUESS;
 
@@ -218,8 +229,17 @@ contract GOTDeathPool is Ownable {
           }
         }
 
-        if (prediction.firstToDie == truth.firstToDie) {
-          points = points + POINTS_FOR_CORRECT_FIRST_TO_DIE;
+        if (_skipsFirstEpisode == true) {
+          // if we skip the first episode, just use first to die after episode 1
+          if (prediction.firstToDie == truth.firstToDieAfterFirstEpisode) {
+            points = points + POINTS_FOR_CORRECT_FIRST_TO_DIE;
+          }
+        }
+        else {
+          // if we don't skip the first episode, just use first to die
+          if (prediction.firstToDie == truth.firstToDie) {
+            points = points + POINTS_FOR_CORRECT_FIRST_TO_DIE;
+          }
         }
 
         if (prediction.lastToDie == truth.lastToDie) {

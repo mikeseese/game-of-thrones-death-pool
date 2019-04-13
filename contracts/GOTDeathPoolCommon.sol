@@ -40,6 +40,7 @@ library GOTDeathPoolCommon {
     bool[NumCharacters] dies;
     uint8[NumCharacters] deathEpisode;
     Character firstToDie;
+    Character firstToDieAfterFirstEpisode;
     Character lastToDie;
     Character lastOnThrone;
   }

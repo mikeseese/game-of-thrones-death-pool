@@ -67,6 +67,7 @@ contract("GOTDeathPool", accounts => {
       new BN(web3.utils.toWei("50", "ether")),
       tokenInstance.address,
       true,
+      false,
       {
         from: accounts[0],
       }

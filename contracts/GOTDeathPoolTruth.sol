@@ -42,6 +42,10 @@ contract GOTDeathPoolTruth is Ownable {
     TruthState.firstToDie = character;
   }
 
+  function logFirstToDieAfterFirstEpisode(GOTDeathPoolCommon.Character character) public onlyOwner {
+    TruthState.firstToDieAfterFirstEpisode = character;
+  }
+
   function logLastToDie(GOTDeathPoolCommon.Character character) public onlyOwner {
     TruthState.lastToDie = character;
   }
