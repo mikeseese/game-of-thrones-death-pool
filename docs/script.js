@@ -35,7 +35,7 @@ function contractChanged() {
     instance = contract.at(contractAddress);
 
     instance.tokenAddress.call((err, address) => {
-      if (!err && result) {
+      if (!err && address) {
         const erc20instance = erc20.at(address);
         erc20instance.decimals.call((err, decimals) => {
           instance.requiredStake.call((err, stake) => {
