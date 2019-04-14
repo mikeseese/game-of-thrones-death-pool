@@ -13,7 +13,7 @@
     <script type="text/javascript" src="script.js?v=0"></script>
 
     <label for="pool_contract">Pool Contract Address</label>
-    <input type="text" id="pool_contract" name="pool_contract" placeholder="0x" onkeyup="contractChanged()" onchange="contractChanged()" onpaste="contractChanged()" /><br/>
+    <input type="text" id="pool_contract" name="pool_contract" placeholder="0x" onkeyup="contractChanged()" onchange="contractChanged()" onpaste="contractChanged()" /> <input type="button" id="share" onclick="copyLink()" value="Copy Shareable Link!" /><br/>
     <a href="create.html">Create a Pool!</a><br />
     <br />
     <input id="stake" style="display: none;" type="button" value="Stake" onclick="stake()" /><br />

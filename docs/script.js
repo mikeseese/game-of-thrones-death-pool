@@ -209,9 +209,11 @@ function contractChanged() {
 
   if (isValid) {
     $("#prediction").css("display", "block");
+    $("#share").css("display", "block");
   }
   else {
     $("#prediction").css("display", "none");
+    $("#share").css("display", "none");
   }
 }
 
@@ -276,4 +278,16 @@ function getUrlParameter(name) {
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
   var results = regex.exec(location.search);
   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
+}
+
+function copyLink() {
+  const copyText = `https://seesemichaelj.github.io/game-of-thrones-death-pool/?contract=${$("#pool_contract").val()}`;
+  copyText.select();
+  document.execCommand("copy");
+
+  $("#share").val("Copied!");
+
+  setTimeout(() => {
+    $("#share").val("Copy Shareable Link!");
+  }, 2500);
+}
