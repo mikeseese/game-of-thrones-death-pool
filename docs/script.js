@@ -21,11 +21,16 @@ let artifact;
 let contract;
 let instance;
 let erc20;
+let lastAddress;
 
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
 
 function contractChanged() {
   const contractAddress = $("#pool_contract").val();
+  if (contractAddress === lastAddress) {
+    return;
+  }
+  lastAddress = contractAddress;
   let isValid = true;
   isValid = isValid && contractAddress.startsWith("0x");
   isValid = isValid && contractAddress.length === 42;
