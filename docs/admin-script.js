@@ -37,7 +37,7 @@ function disperse() {
         const amount = parseInt($("#amount").val());
         const numDecimals = decimals.toNumber();
         const adjustedAmount = new BN(amount).mul(new BN(10).pow(new BN(numDecimals)));
-        instance.disperse.sendTransaction(account, adjustedAmount, (err, result) => {
+        instance.disperse.sendTransaction(account, adjustedAmount.toString(), (err, result) => {
           console.log(err);
           console.log(result);
         });
