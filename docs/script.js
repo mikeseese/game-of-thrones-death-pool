@@ -26,7 +26,8 @@ let stakeString;
 let erc20Symbol;
 
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
-const leaderboardInsert = `<li>PLAYER_NAME: PLAYER_POINTS Points</option>`;
+const leaderboardInsert = `<li>PLAYER_NAME: PLAYER_POINTS Points</li>`;
+const deathInsert = `<li>CHARACTER_NAME</li>`;
 
 function diesChange(element) {
   if (element.checked) {
@@ -263,7 +264,7 @@ function contractChanged() {
                           }
                           for (let i = 0; i < characters.length - 2; i++) {
                             if (dies[i]) {
-                              $(`#episode${deathEpisode[i]} ul`)[0].append(`<li>${characters[i]}</li>`);
+                              $(`#episode${deathEpisode[i]} ul`)[0].append(deathEpisode.replace(/CHARACTER_NAME/g, characters[i]));
                             }
                           }
                           $("#first_to_die_truth").text(characters[firstToDie]);
