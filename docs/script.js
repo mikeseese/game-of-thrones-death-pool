@@ -41,24 +41,23 @@ function stake() {
   const contractAddress = $("#pool_contract").val();
   $("#error").css("display", "none");
 
-  instance.methods.tokenAddress.call((err, address) => {
+  instance.tokenAddress.call((err, address) => {
     if (!err && address) {
       let erc20instance;
       if (address === "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359") {
-        erc20instance = new web3js.eth.Contract(daiabi, address);
+        erc20instance = web3js.eth.contract(daiabi).at(address);
       }
       else {
-        erc20instance = erc20.clone()
-        erc20instance.address = address;
+        erc20instance = erc20.at(address);
       }
-      instance.methods.requiredStake.call((err, stake) => {
-        instance.methods.stake().send((err, result) => {
+      instance.requiredStake.call((err, stake) => {
+        instance.stake.sendTransaction((err, result) => {
           if (err) {
             $("#error").text(err);
             $("#error").css("display", "block");
           }
         });
-        erc20instance.methods.approve(contractAddress, stake).send((err, result) => {
+        erc20instance.approve.sendTransaction(contractAddress, stake, (err, result) => {
           if (err) {
             $("#error").text(err);
             $("#error").css("display", "block");
@@ -72,7 +71,7 @@ function stake() {
 function withdraw() {
   $("#error").css("display", "none");
 
-  instance.methods.withdraw().send((err, result) => {
+  instance.withdraw.sendTransaction((err, result) => {
     if (err) {
       $("#error").text(err);
       $("#error").css("display", "block");
@@ -145,14 +144,14 @@ function predict() {
     return;
   }
 
-  instance.methods.predict(
+  instance.predict.sendTransaction(
     dies,
     deathEpisode,
     firstToDie,
     lastToDie,
     lastOnThrone,
-    name
-  ).send((err, result) => {
+    name,
+    (err, result) => {
       if (err) {
         $("#error").text(err);
         $("#error").css("display", "block");
@@ -173,17 +172,15 @@ function contractChanged() {
   isValid = isValid && haveWeb3;
 
   if (isValid) {
-    instance = contract.clone();
-    instance.address = contractAddress;
+    instance = contract.at(contractAddress);
 
-    instance.methods.tokenAddress.call((err, address) => {
+    instance.tokenAddress.call((err, address) => {
       if (!err && address) {
-        const erc20instance = erc20.clone();
-        erc20instance.address = address;
-        erc20instance.methods.symbol.call((err, symbol) => {
+        const erc20instance = erc20.at(address);
+        erc20instance.symbol.call((err, symbol) => {
           erc20Symbol = symbol;
-          erc20instance.methods.decimals.call((err, decimals) => {
-            instance.methods.requiredStake.call((err, stake) => {
+          erc20instance.decimals.call((err, decimals) => {
+            instance.requiredStake.call((err, stake) => {
               if (!err && stake && decimals) {
                 const numDecimals = decimals.toNumber();
                 const stakeBn = new BN(stake.toString()).div(new BN(10).pow(new BN(numDecimals)));
@@ -197,14 +194,14 @@ function contractChanged() {
       }
     });
 
-    instance.methods.havePredicted.call((err, result) => {
+    instance.havePredicted.call((err, result) => {
       if (!err && result === true) {
       }
       else {
       }
     });
 
-    instance.methods.haveStaked.call((err, result) => {
+    instance.haveStaked.call((err, result) => {
       if (!err && result === true) {
         $("#stake").css("display", "none");
         $("#withdraw").css("display", "block");
@@ -215,7 +212,7 @@ function contractChanged() {
       }
     });
 
-    instance.methods._open.call((err, result) => {
+    instance._open.call((err, result) => {
       if (!err && result === true) {
         $("#prediction").css("display", "block");
         $("#leaderboard_toggle").css("display", "none");
@@ -226,13 +223,14 @@ function contractChanged() {
         $("#leaderboard_toggle").css("display", "block");
         $("#truth_toggle").css("display", "block");
 
-        instance.methods.TruthContract.call((err, result) => {
+        instance.TruthContract.call((err, result) => {
           if (!err && result) {
             $.getJSON("GOTDeathPoolTruth.json?v=1", (data) => {
               artifact = data;
 
-              const truthInstance = new web3js.eth.Contract(truthContract, result);
-              truthInstance.methods.GetTruthState.call((err, result) => {
+              const truthContract = web3js.eth.contract(data.abi);
+              const truthInstance = truthContract.at(result);
+              truthInstance.GetTruthState.call((err, result) => {
                 if (!err && result) {
                   for (let i = 0; i < characters.length - 2; i++) {
                     if (result.dies[i]) {
@@ -251,7 +249,7 @@ function contractChanged() {
       }
     });
 
-    instance.methods._canClaim.call(async (err, result) => {
+    instance._canClaim.call(async (err, result) => {
       if (!err && result === true) {
         $("#claim").css("display", "block");
       }
@@ -260,7 +258,7 @@ function contractChanged() {
       }
     });
 
-    instance.methods.calculatePoints.call(async (err, result) => {
+    instance.calculatePoints.call(async (err, result) => {
       if (err) {
         console.error(err);
       }
@@ -271,7 +269,7 @@ function contractChanged() {
           const addresses = result["1"];
           for (let i = 0; i < points.length; i++) {
             const name = await new Promise((resolve, reject) => {
-              instance.methods.getName.call(addresses[i], (err, result) => {
+              instance.getName.call(addresses[i], (err, result) => {
                 if (err) {
                   reject(err);
                 }
@@ -328,12 +326,12 @@ window.addEventListener('load', function() {
   }
 
   web3js.eth.defaultAccount = web3js.eth.accounts[0];
-  erc20 = new web3js.eth.Contract(erc20abi);
+  erc20 = web3js.eth.contract(erc20abi);
 
   $.getJSON("GOTDeathPool.json?v=1", (data) => {
     artifact = data;
 
-    contract = new web3js.eth.Contract(artifact.abi);
+    contract = web3js.eth.contract(artifact.abi);
   
     // Now you can start your app & access web3 freely:
     haveWeb3 = true;
