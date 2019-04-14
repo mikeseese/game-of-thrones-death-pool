@@ -238,7 +238,7 @@ function contractChanged() {
 
         instance.TruthContract.call((err, result) => {
           if (!err && result) {
-            $.getJSON("GOTDeathPoolTruth.json?v=2", (data) => {
+            $.getJSON("GOTDeathPoolTruth.json?v=3", (data) => {
               artifact = data;
 
               const truthContract = web3js.eth.contract(data.abi);
@@ -373,7 +373,7 @@ window.addEventListener('load', function() {
   web3js.eth.defaultAccount = web3js.eth.accounts[0];
   erc20 = web3js.eth.contract(erc20abi);
 
-  $.getJSON("GOTDeathPool.json?v=2", (data) => {
+  $.getJSON("GOTDeathPool.json?v=3", (data) => {
     artifact = data;
 
     contract = web3js.eth.contract(artifact.abi);
