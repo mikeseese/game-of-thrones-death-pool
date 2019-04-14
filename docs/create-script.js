@@ -18,7 +18,7 @@ window.addEventListener('load', function() {
 
   erc20 = web3js.eth.contract(erc20abi);
 
-  $.getJSON("GOTDeathPool.json?v=3", (data) => {
+  $.getJSON("GOTDeathPool.json?v=4", (data) => {
     artifact = data;
     contract = web3js.eth.contract(artifact.abi);
   });

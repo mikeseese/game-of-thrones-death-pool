@@ -5,10 +5,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
-    <script type="text/javascript" src="web3.min.js?v=3"></script>
-    <script type="text/javascript" src="erc20.js?v=3"></script>
-    <script type="text/javascript" src="bn.js?v=3"></script>
-    <script type="text/javascript" src="admin-script.js?v=3"></script>
+    <script type="text/javascript" src="web3.min.js?v=4"></script>
+    <script type="text/javascript" src="erc20.js?v=4"></script>
+    <script type="text/javascript" src="bn.js?v=4"></script>
+    <script type="text/javascript" src="admin-script.js?v=4"></script>
 
     <p>
       <strong>Use this dApp at your own risk</strong>. While it has been thoroughly tested
@@ -32,5 +32,8 @@
     <input type="button" value="Allow Claiming" onclick="allowClaiming()" /><br/>
     <br />
     <input type="text" id="account" placeholder="0x..."/><input type="text" id="amount" placeholder="20"/><input type="button" value="Disperse Funds" onclick="disperse()" /><br />
+    <br />
+    <br />
+    <input type="button" value="Force Complete (allows you to complete even if the Truth Contact isn't completed, implemented to prevent fund lockup)" onclick="forceComplete()" />
   </body>
 </html>

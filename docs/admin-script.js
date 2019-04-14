@@ -28,6 +28,13 @@ function complete() {
   });
 }
 
+function forceComplete() {
+  instance.forceComplete.sendTransaction((err, result) => {
+    console.log(err);
+    console.log(result);
+  });
+}
+
 function disperse() {
   instance.tokenAddress.call((err, address) => {
     if (!err && address) {
@@ -87,7 +94,7 @@ window.addEventListener('load', function() {
 
   web3js.eth.defaultAccount = web3js.eth.accounts[0];
 
-  $.getJSON("GOTDeathPool.json?v=3", (data) => {
+  $.getJSON("GOTDeathPool.json?v=4", (data) => {
     artifact = data;
 
     contract = web3js.eth.contract(artifact.abi);

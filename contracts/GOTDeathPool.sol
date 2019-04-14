@@ -279,7 +279,15 @@ contract GOTDeathPool is Ownable {
     return (resultPoints, resultAddresses);
   }
 
+  function forceComplete() public onlyOwner isIncomplete {
+    _complete();
+  }
+
   function complete() public onlyOwner answersAvailable isIncomplete {
+    _complete();
+  }
+
+  function _complete() private onlyOwner isIncomplete {
     _canDisperse = true;
     int16[] memory resultPoints;
     address[] memory resultAddresses;
