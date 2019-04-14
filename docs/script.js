@@ -80,6 +80,17 @@ function withdraw() {
   });
 }
 
+function claim() {
+  $("#error").css("display", "none");
+
+  instance.claim.sendTransaction((err, result) => {
+    if (err) {
+      $("#error").text(err);
+      $("#error").css("display", "block");
+    }
+  });
+}
+
 function predict() {
   const dies = [];
   const deathEpisode = [];
