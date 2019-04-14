@@ -61,6 +61,17 @@ function stake() {
   });
 }
 
+function withdraw() {
+  $("#error").css("display", "none");
+
+  instance.stake.sendTransaction((err, result) => {
+    if (err) {
+      $("#error").text(err);
+      $("#error").css("display", "block");
+    }
+  });
+}
+
 function predict() {
   const dies = [];
   const deathEpisode = [];
@@ -187,6 +198,7 @@ function contractChanged() {
 
     instance.haveStaked.call((err, result) => {
       if (!err && result === true) {
+        $("#stake").css("display", "none");
         $("#withdraw").css("display", "block");
       }
       else {
