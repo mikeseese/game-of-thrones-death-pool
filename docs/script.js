@@ -310,6 +310,7 @@ function contractChanged() {
       else {
         const leaderboard = $("#leaderboard ul")[0];
         if (leaderboard) {
+          const data = [];
           const points = result["0"];
           const addresses = result["1"];
           for (let i = 0; i < points.length; i++) {
@@ -323,7 +324,15 @@ function contractChanged() {
                 }
               })
             });
-            $(leaderboard).append(leaderboardInsert.replace(/PLAYER_NAME/g, name).replace(/PLAYER_POINTS/g, points[i]))
+            data.push({
+              points: points[i],
+              address: addresses[i],
+              name,
+            });
+          }
+          data.sort((a, b) => b.points.sub(a.points));
+          for (let i = 0; i < data.length; i++) {
+            $(leaderboard).append(leaderboardInsert.replace(/PLAYER_NAME/g, data[i].name).replace(/PLAYER_POINTS/g, data[i].points))
           }
         }
       }
