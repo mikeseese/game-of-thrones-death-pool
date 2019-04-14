@@ -40,6 +40,10 @@ function contractChanged() {
         erc20instance.decimals.call((err, decimals) => {
           instance.requiredStake.call((err, stake) => {
             if (!err && stake && decimals) {
+              const numDecimals = decimals.toNumber();
+              const stakeBn = new BN(stake).div(new BN(10).pow(numDecimals));
+              let stakeString = stakeBn.toString();
+              console.log(stakeString);
               $("#stake").css("display", "block");
             }
             else {
