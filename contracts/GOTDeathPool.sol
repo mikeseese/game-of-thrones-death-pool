@@ -290,11 +290,11 @@ contract GOTDeathPool is Ownable {
     address fourthPlace;
     address fifthPlace;
 
-    int16 firstPlacePoints = 0;
-    int16 secondPlacePoints = 0;
-    int16 thirdPlacePoints = 0;
-    int16 fourthPlacePoints = 0;
-    int16 fifthPlacePoints = 0;
+    int16 firstPlacePoints = -1000;
+    int16 secondPlacePoints = -1000;
+    int16 thirdPlacePoints = -1000;
+    int16 fourthPlacePoints = -1000;
+    int16 fifthPlacePoints = -1000;
 
     (resultPoints, resultAddresses) = calculatePoints();
 
