@@ -95,7 +95,26 @@ function stake() {
 
   const name = $("#name").val();
 
-  instance.predict.sendTransaction(dies, deathEpisode, firstToDie, lastToDie, lastOnThrone, name);
+  if (name === "") {
+    $("#error").text(`Set something to be your "name" for the leaderboard`);
+    $("#error").css("display", "block");
+    return;
+  }
+
+  instance.predict.sendTransaction(
+    dies,
+    deathEpisode,
+    firstToDie,
+    lastToDie,
+    lastOnThrone,
+    name,
+    (err, result) => {
+      if (err) {
+        $("#error").text(err);
+        $("#error").css("display", "block");
+      }
+    }
+  );
 }
 
 function contractChanged() {
