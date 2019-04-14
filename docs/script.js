@@ -29,8 +29,9 @@ const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</opt
 
 function stake() {
   $("#characters").children().map((idx, element) => {
-    const dies = $(element).find("input").checked;
-    console.log(dies);
+    const dies = $(element).find("input")[0].checked;
+    const deathEpisode = $(element).find("select").val();
+    console.log(dies, deathEpisode);
   });
   instance.predict();
 }
