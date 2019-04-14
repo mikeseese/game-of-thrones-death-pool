@@ -283,9 +283,7 @@ function getUrlParameter(name) {
 function copyLink() {
   const copyText = `https://seesemichaelj.github.io/game-of-thrones-death-pool/?contract=${$("#pool_contract").val()}`;
 
-  $("#copy").val(copyText);
-  $("#copy").select();
-  document.execCommand("copy");
+  copyToClipboard(copyText);
 
   $("#share").val("Copied!");
 
@@ -293,3 +291,11 @@ function copyLink() {
     $("#share").val("Copy Shareable Link!");
   }, 2500);
 }
+const copyToClipboard = str => {
+  const el = document.createElement('textarea');
+  el.value = str;
+  document.body.appendChild(el);
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
+};
