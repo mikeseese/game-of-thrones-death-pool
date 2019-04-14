@@ -36,6 +36,31 @@ function diesChange(element) {
   }
 }
 
+function stake() {
+  const contractAddress = $("#pool_contract").val();
+  $("#error").css("display", "none");
+
+  instance.tokenAddress.call((err, address) => {
+    if (!err && address) {
+      const erc20instance = erc20.at(address);
+      instance.requiredStake.call((err, stake) => {
+        erc20instance.increaseAllowance.sendTransaction(contractAddress, stake, (err, result) => {
+          if (err) {
+            $("#error").text(err);
+            $("#error").css("display", "block");
+          }
+        });
+        instance.stake.sendTransaction((err, result) => {
+          if (err) {
+            $("#error").text(err);
+            $("#error").css("display", "block");
+          }
+        });
+      });
+    }
+  });
+}
+
 function predict() {
   const dies = [];
   const deathEpisode = [];
