@@ -74,11 +74,56 @@
     <input id="withdraw" style="display: none;" type="button" value="Withdraw" onclick="withdraw()" /><br />
     <br />
 
+    <input id="claim" style="display: none;" type="button" value="Claim" onclick="claim()" /><br />
     <input id="leaderboard_toggle" type="button" style="display: none;" onclick="toggleLeaderboard()" value="Show/Hide leaderboard"><br/>
     <br />
     <div id="leaderboard" style="display: none;">
       <ul style="list-style-type: decimal">
       </ul>
+    </div>
+    <input id="truth_toggle" type="button" style="display: none;" onclick="toggleTruth()" value="SPOILER ALERT: Show/Hide deaths"><br/>
+    <br />
+    <div id="truth" style="display: none;">
+      <div id="episodes">
+        <div id="episode1">
+          <span>Deaths in Episode 1</span>
+          <ul>
+          </ul>
+        </div>
+        <div id="episode2">
+          <span>Deaths in Episode 2</span>
+          <ul>
+          </ul>
+        </div>
+        <div id="episode3">
+          <span>Deaths in Episode 3</span>
+          <ul>
+          </ul>
+        </div>
+        <div id="episode4">
+          <span>Deaths in Episode 4</span>
+          <ul>
+          </ul>
+        </div>
+        <div id="episode5">
+          <span>Deaths in Episode 5</span>
+          <ul>
+          </ul>
+        </div>
+        <div id="episode6">
+          <span>Deaths in Episode 6</span>
+          <ul>
+          </ul>
+        </div>
+      </div>
+      <label for="first_to_die_truth">First to Die</label>
+      <span id="first_to_die_truth"></span><br />
+      <label for="first_to_die_after_first_episode_truth">First to Die after First Episode</label>
+      <span id="first_to_die_after_first_episode_truth"></span><br />
+      <label for="last_to_die_truth">Last to Die</label>
+      <span id="last_to_die_truth"></span><br />
+      <label for="last_on_throne_truth">Last on Throne</label>
+      <span id="last_on_throne_truth"></span><br />
     </div>
 
     <div id="error" style="display: none; color: red;"></div>
@@ -102,8 +147,8 @@
           </select>
         </div>
         <div>
-          <label for="last_on_thrown">Last on Thrown</label>
-          <select id="last_on_thrown">
+          <label for="last_on_throne">Last on Throne</label>
+          <select id="last_on_throne">
             <option value="null">Select One...</option>
           </select>
         </div>

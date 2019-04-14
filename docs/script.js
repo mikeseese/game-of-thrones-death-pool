@@ -126,7 +126,7 @@ function predict() {
     lastToDie = parseInt(lastToDie);
   }
 
-  let lastOnThrone = $("#last_on_thrown").val();
+  let lastOnThrone = $("#last_on_throne").val();
   if (lastOnThrone === "null") {
     $("#error").text(`Pick the last character to occupy the throne/rule of Westeros`);
     $("#error").css("display", "block");
@@ -212,6 +212,64 @@ function contractChanged() {
       }
     });
 
+    instance._open.call((err, result) => {
+      if (!err && result === true) {
+        $("#prediction").css("display", "block");
+        $("#leaderboard_toggle").css("display", "none");
+        $("#truth_toggle").css("display", "none");
+      }
+      else {
+        $("#prediction").css("display", "none");
+        $("#leaderboard_toggle").css("display", "block");
+        $("#truth_toggle").css("display", "block");
+
+        instance.TruthContract.call((err, result) => {
+          if (!err && result) {
+            $.getJSON("GOTDeathPoolTruth.json", (data) => {
+              artifact = data;
+
+              const truthContract = web3js.eth.contract(data.abi);
+              const truthInstance = truthContract.at(result);
+              truthInstance.GetTruthState.call((err, result) => {
+                if (!err && result) {
+                  for (let i = 0; i < characters.length - 2; i++) {
+                    if (result.dies[i]) {
+                      $(`#episode${result.deathEpisode[i]} ul`)[0].append(characters[i]);
+                    }
+                  }
+                  $("#first_to_die_truth").text(characters[result.firstToDie]);
+                  $("#first_to_die_after_first_episode_truth").text(characters[result.firstToDieAfterFirstEpisode]);
+                  $("#last_to_die_truth").text(characters[result.lastToDie]);
+                  $("#last_on_throne_truth").text(characters[result.lastOnThrone]);
+                }
+              })
+            });
+          }
+        });
+      }
+    });
+
+    instance._canClaim.call(async (err, result) => {
+      if (!err && result === true) {
+        const places = [];
+        places.push(await instance._firstPlace.call());
+        places.push(await instance._secondPlace.call());
+        places.push(await instance._thirdPlace.call());
+        places.push(await instance._fourthPlace.call());
+        places.push(await instance._fifthPlace.call());
+        if (places.includes(web3js.eth.defaultAccount)) {
+          $("#claim").css("display", "block");
+        }
+        else {
+          $("#error").text("You did not place");
+          $("#error").css("display", "block");
+        }
+      }
+      else {
+        $("#claim").css("display", "none");
+      }
+    });
+
     instance.calculatePoints.call(async (err, result) => {
       if (err) {
         console.error(err);
@@ -234,13 +292,11 @@ function contractChanged() {
     $("#prediction").css("display", "block");
     $("#share").css("display", "block");
     $("#stake").css("display", "block");
-    $("#leaderboard_toggle").css("display", "block");
   }
   else {
     $("#prediction").css("display", "none");
     $("#share").css("display", "none");
     $("#stake").css("display", "none");
-    $("#leaderboard_toggle").css("display", "none");
   }
 }
 
@@ -250,6 +306,10 @@ function toggleInstructions() {
 
 function toggleLeaderboard() {
   $("#leaderboard").toggle();
+}
+
+function toggleTruth() {
+  $("#truth").toggle();
 }
 
 window.addEventListener('load', function() {
@@ -300,7 +360,7 @@ window.addEventListener('load', function() {
       );
     }
 
-    $("#last_on_thrown").append(
+    $("#last_on_throne").append(
       characterOptionInsert
       .replace(/CHARACTER_NAME/g, characters[i])
       .replace(/CHARACTER_IDX/g, i)

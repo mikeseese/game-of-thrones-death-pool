@@ -30,6 +30,7 @@ contract GOTDeathPoolTruth is Ownable {
   {
     TruthState.lastOnThrone = GOTDeathPoolCommon.Character.CerseiLannister;
     TruthState.firstToDie = GOTDeathPoolCommon.Character.NewCharacter;
+    TruthState.firstToDieAfterFirstEpisode = GOTDeathPoolCommon.Character.NewCharacter;
     TruthState.lastToDie = GOTDeathPoolCommon.Character.NewCharacter;
     TruthComplete = false;
   }

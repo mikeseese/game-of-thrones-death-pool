@@ -12,18 +12,18 @@ contract GOTDeathPool is Ownable {
   using GOTDeathPoolCommon for GOTDeathPoolCommon.Character;
   using SafeERC20 for IERC20;
 
-  GOTDeathPoolTruth private TruthContract;
-  bool private _open;
-  bool private _canDisperse;
-  bool private _canClaim;
+  GOTDeathPoolTruth public TruthContract;
+  bool public _open;
+  bool public _canDisperse;
+  bool public _canClaim;
   bool private _ownerCanDisperse;
   uint256 private _stakeRequired;
   bool public _skipsFirstEpisode;
   IERC20 private _token;
   address[] private _stakers;
-  mapping(address => GOTDeathPoolCommon.Prediction) private predictions;
+  mapping(address => GOTDeathPoolCommon.Prediction) public predictions;
   mapping(address => uint256) private pool;
-  mapping(address => string) private names;
+  mapping(address => string) public names;
   mapping(address => bool) private claimed;
   address public _firstPlace;
   address public _secondPlace;
