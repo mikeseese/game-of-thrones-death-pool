@@ -8,7 +8,11 @@ let instance;
 let lastAddress;
 
 function logEpisode() {
-  const deathState = JSON.parse($("#death_state").val());
+  const deathStateByName = JSON.parse($("#death_state").val());
+  const deathState = [];
+  for (let i = 0; i < characters.length; i++) {
+    deathState.push(deathStateByName[characters[i]]);
+  }
   const episode = parseInt($("#episode").val());
   const throneOwner = parseInt($("#throne_owner").val());
   instance.logEpisode.sendTransaction(deathState, episode, throneOwner, (err, result) => {
