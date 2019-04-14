@@ -216,6 +216,11 @@ function contractChanged() {
 }
 
 window.addEventListener('load', function() {
+  const contractAddress = getUrlParameter("contract");
+  if (contractAddress) {
+    $("#pool_contract").val(contractAddress);
+  }
+
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
     // Use Mist/MetaMask's provider
@@ -264,4 +269,11 @@ window.addEventListener('load', function() {
       .replace(/CHARACTER_IDX/, i)
     );
   }
-})
+});
+
+function getUrlParameter(name) {
+  name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
+  return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};
