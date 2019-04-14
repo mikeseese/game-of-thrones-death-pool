@@ -37,20 +37,24 @@ function contractChanged() {
     instance.tokenAddress.call((err, address) => {
       if (!err && address) {
         const erc20instance = erc20.at(address);
-        erc20instance.decimals.call((err, decimals) => {
-          instance.requiredStake.call((err, stake) => {
-            if (!err && stake && decimals) {
-              const numDecimals = decimals.toNumber();
-              const stakeBn = new BN(stake.toString()).div(new BN(10).pow(new BN(numDecimals)));
-              let stakeString = stakeBn.toString();
-              console.log(stakeString);
-              $("#stake").css("display", "block");
-            }
-            else {
-              $("#stake").css("display", "none");
-            }
+        erc20instance.symbol.call((err, symbol) => {
+          erc20instance.decimals.call((err, decimals) => {
+            instance.requiredStake.call((err, stake) => {
+              if (!err && stake && decimals) {
+                const numDecimals = decimals.toNumber();
+                const stakeBn = new BN(stake.toString()).div(new BN(10).pow(new BN(numDecimals)));
+                let stakeString = stakeBn.toString();
+                console.log(stakeString);
+                $("#stake").css("display", "block");
+                $("#stake").val(`Stake ${stakeString} ${symbol}`);
+                $("#withdraw").val(`Withdraw ${stakeString} ${symbol}`);
+              }
+              else {
+                $("#stake").css("display", "none");
+              }
+            });
           });
-        })
+        });
       }
     });
 
