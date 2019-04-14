@@ -28,7 +28,7 @@ let erc20Symbol;
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
 
 function stake() {
-  $("#characters").children().map((element) => {
+  $("#characters").children().map((idx, element) => {
     const dies = element.find("input").val();
     console.log(dies);
   });
