@@ -44,13 +44,13 @@ function stake() {
     if (!err && address) {
       const erc20instance = erc20.at(address);
       instance.requiredStake.call((err, stake) => {
-        erc20instance.approve.sendTransaction(contractAddress, stake, (err, result) => {
+        instance.stake.sendTransaction((err, result) => {
           if (err) {
             $("#error").text(err);
             $("#error").css("display", "block");
           }
         });
-        instance.stake.sendTransaction((err, result) => {
+        erc20instance.approve.sendTransaction(contractAddress, stake, (err, result) => {
           if (err) {
             $("#error").text(err);
             $("#error").css("display", "block");
