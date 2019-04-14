@@ -27,8 +27,8 @@ const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</opt
 function contractChanged() {
   const contractAddress = $("#pool_contract").val();
   let isValid = true;
-  isValid = isValid && contract.startsWith("0x");
-  isValid = isValid && contract.length === 42;
+  isValid = isValid && contractAddress.startsWith("0x");
+  isValid = isValid && contractAddress.length === 42;
   isValid = isValid && haveWeb3;
 
   instance = contract.at(contractAddress);
