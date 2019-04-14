@@ -36,7 +36,7 @@ function diesChange(element) {
   }
 }
 
-function stake() {
+function predict() {
   const dies = [];
   const deathEpisode = [];
 
