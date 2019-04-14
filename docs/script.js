@@ -264,7 +264,7 @@ function contractChanged() {
                           }
                           for (let i = 0; i < characters.length - 2; i++) {
                             if (dies[i]) {
-                              $($(`#episode${deathEpisode[i]} ul`)[0]).append(deathEpisode.replace(/CHARACTER_NAME/g, characters[i]));
+                              $($(`#episode${deathEpisode[i]} ul`)[0]).append(deathInsert.replace(/CHARACTER_NAME/g, characters[i]));
                             }
                           }
                           $("#first_to_die_truth").text(characters[firstToDie]);
