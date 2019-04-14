@@ -4,9 +4,9 @@ let haveWeb3 = false;
 const characterInsert = `
 <div class="character">
   <label for="char_CHARACTER_IDX_dies">CHARACTER_NAME Dies</label>
-  <input type="checkbox" id="char_CHARACTER_IDX_dies" name="char_CHARACTER_IDX_dies" />
+  <input type="checkbox" id="char_CHARACTER_IDX_dies" name="char_CHARACTER_IDX_dies" onclick="diesChange(this);" />
   <select id="death_episode_CHARACTER_IDX" disabled="true">
-    <option>Select One...</option>
+    <option value="null">Select One...</option>
     <option value="1">1</option>
     <option value="2">2</option>
     <option value="3">3</option>
@@ -27,13 +27,67 @@ let erc20Symbol;
 
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
 
+function diesChange(element) {
+  if ($(element).checked) {
+    $($(element).parent().find("select")[0]).prop("disabled", false);
+  }
+  else {
+    $($(element).parent().find("select")[0]).prop("disabled", true);
+  }
+}
+
 function stake() {
+  const dies = [];
+  const deathEpisode = [];
+
+  $("#error").css("display", "none");
+
   $("#characters").children().map((idx, element) => {
-    const dies = $(element).find("input")[0].checked;
-    const deathEpisode = $(element).find("select").val();
-    console.log(dies, deathEpisode);
+    dies.push($(element).find("input")[0].checked);
+    const episode = $(element).find("select").val();
+    if (episode === "null") {
+      $("#error").text(`Pick the episode ${characters[idx]} dies`);
+      $("#error").css("display", "block");
+      return;
+    }
+    else {
+      deathEpisode.push(parseInt(episode));
+    }
   });
-  instance.predict();
+
+  let firstToDie = $("#first_to_die").val();
+  if (firstToDie === "null") {
+    $("#error").text(`Pick the first character to die`);
+    $("#error").css("display", "block");
+    return;
+  }
+  else {
+    firstToDie = parseInt(firstToDie);
+  }
+
+  let lastToDie = $("#last_to_die").val();
+  if (lastToDie === "null") {
+    $("#error").text(`Pick the last character to die`);
+    $("#error").css("display", "block");
+    return;
+  }
+  else {
+    lastToDie = parseInt(lastToDie);
+  }
+
+  let lastOnThrone = $("#last_on_thrown").val();
+  if (lastOnThrone === "null") {
+    $("#error").text(`Pick the last character to occupy the throne/rule of Westeros`);
+    $("#error").css("display", "block");
+    return;
+  }
+  else {
+    lastOnThrone = parseInt(lastOnThrone);
+  }
+
+  const name = $("#name").val();
+
+  instance.predict.sendTransaction(dies, deathEpisode, firstToDie, lastToDie, lastOnThrone, name);
 }
 
 function contractChanged() {
