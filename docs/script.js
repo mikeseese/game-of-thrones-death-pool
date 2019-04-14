@@ -189,6 +189,7 @@ window.addEventListener('load', function() {
     web3js = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
   }
 
+  web3js.eth.defaultAccount = web3js.eth.accounts[0];
   erc20 = web3js.eth.contract(erc20abi);
 
   $.getJSON("GOTDeathPool.json", (data) => {
