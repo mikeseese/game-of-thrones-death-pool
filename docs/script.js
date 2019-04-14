@@ -41,7 +41,7 @@ function contractChanged() {
           instance.requiredStake.call((err, stake) => {
             if (!err && stake && decimals) {
               const numDecimals = decimals.toNumber();
-              const stakeBn = new BN(stake).div(new BN(10).pow(numDecimals));
+              const stakeBn = new BN(stake.toString()).div(new BN(10).pow(numDecimals));
               let stakeString = stakeBn.toString();
               console.log(stakeString);
               $("#stake").css("display", "block");
