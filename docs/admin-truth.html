@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GOT Death Pool by Mike Seese</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <script type="text/javascript" src="web3.min.js?v=1"></script>
+    <script type="text/javascript" src="admin-truth-script.js?v=1"></script>
+
+    <p>
+      <strong>Use this dApp at your own risk</strong>. While it has been thoroughly tested
+      and I personally will be using it, I have not spent significant time
+      ensuring its security. I am not responsible for any funds you may lose.
+    </p>
+    <p>
+      You can find the source code on <a href="https://github.com/seesemichaelj/game-of-thrones-death-pool">GitHub</a>.
+      The front end code you see here can be found
+      <a href="https://github.com/seesemichaelj/game-of-thrones-death-pool/tree/master/docs">in the docs folder</a>.
+    </p>
+
+    <hr />
+    <br />
+    <label for="truth_contract">Truth Contract Address</label>
+    <input type="text" id="truth_contract" name="pool_contract" placeholder="0x" onkeyup="contractChanged()" onchange="contractChanged()" onpaste="contractChanged()" /><br/>
+    <br />
+    <label for="death_state">Death State (a boolean array of who's dead). See the <a href="https://github.com/seesemichaelj/game-of-thrones-death-pool/blob/master/contracts/GOTDeathPoolCommon.sol#L6">character list</a> for the order (must include all 30, you can leave false for the last two).</label>
+    <input type="text" id="death_state" name="death_state" placeholder="[true, false,...]" /><br />
+    <br />
+    <label for="episode">Episode (i.e. 1, 2, 3, 4, 5, 6)</label>
+    <input type="text" id="episode" name="episode" /><br />
+    <br />
+    <label for="throne_owner">Throne Owner (a 0-based number from the <a href="https://github.com/seesemichaelj/game-of-thrones-death-pool/blob/master/contracts/GOTDeathPoolCommon.sol#L6">character list</a>; i.e. Tyrion Lannister is 2)</label>
+    <input type="text" id="throne_owner" name="throne_owner" /><br />
+    <br />
+    <input type="button" value="Log Episode" onclick="logEpisode()" /><br />
+    <br />
+
+    <input type="text" id="first_to_die" /><input type="button" value="Log First To Die" onclick="logFirstToDie()" /><br />
+    <br />
+    <input type="text" id="first_to_die_after_first_episode" /><input type="button" value="Log First To Die After First Episode" onclick="logFirstToDieAfterFirstEpisode()" /><br />
+    <br />
+    <input type="text" id="last_to_die" /><input type="button" value="Log Last To Die" onclick="logLastToDie()" /><br />
+    <br />
+    <input type="button" value="Complete" onclick="complete()" />
+    <input type="button" value="Incomplete" onclick="incomplete()" />
+  </body>
+</html>
