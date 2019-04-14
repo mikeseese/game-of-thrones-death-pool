@@ -7,14 +7,14 @@ let contract;
 let instance;
 let lastAddress;
 
-function close() {
+function closePool() {
   instance.close.sendTransaction((err, result) => {
     console.log(err);
     console.log(result);
   });
 }
 
-function open() {
+function openPool() {
   instance.open.sendTransaction((err, result) => {
     console.log(err);
     console.log(result);
