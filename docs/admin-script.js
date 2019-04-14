@@ -68,7 +68,6 @@ window.addEventListener('load', function() {
   }
 
   web3js.eth.defaultAccount = web3js.eth.accounts[0];
-  erc20 = web3js.eth.contract(erc20abi);
 
   $.getJSON("GOTDeathPool.json?v=1", (data) => {
     artifact = data;
