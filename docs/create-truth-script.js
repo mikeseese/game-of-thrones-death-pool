@@ -1,5 +1,6 @@
 let artifact;
 let contract;
+let haveWeb3;
 
 window.addEventListener('load', function() {
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
