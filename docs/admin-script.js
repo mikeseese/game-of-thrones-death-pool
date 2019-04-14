@@ -1,11 +1,11 @@
 
 let haveWeb3 = false;
 
-
 let artifact;
 let contract;
 let instance;
 let lastAddress;
+let erc20;
 
 function closePool() {
   instance.close.sendTransaction((err, result) => {
@@ -25,6 +25,24 @@ function complete() {
   instance.complete.sendTransaction((err, result) => {
     console.log(err);
     console.log(result);
+  });
+}
+
+function disperse() {
+  instance.tokenAddress.call((err, address) => {
+    if (!err && address) {
+      const erc20instance = erc20.at(address);
+      erc20instance.decimals.call((err, decimals) => {
+        const account = $("#account").val();
+        const amount = parseInt($("#account").val());
+        const numDecimals = decimals.toNumber();
+        const adjustedAmount = new BN(amount).div(new BN(10).pow(new BN(numDecimals)));
+        instance.disperse.sendTransaction(account, adjustedAmount, (err, result) => {
+          console.log(err);
+          console.log(result);
+        });
+      });
+    }
   });
 }
 
@@ -73,6 +91,7 @@ window.addEventListener('load', function() {
     artifact = data;
 
     contract = web3js.eth.contract(artifact.abi);
+    erc20 = web3js.eth.contract(erc20abi);
   
     // Now you can start your app & access web3 freely:
     haveWeb3 = true;
