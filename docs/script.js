@@ -29,6 +29,17 @@ const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</opt
 const leaderboardInsert = `<li>PLAYER_NAME: PLAYER_POINTS Points</li>`;
 const deathInsert = `<li>CHARACTER_NAME</li>`;
 
+function hex2a(hexx) {
+  var hex = hexx.toString();//force conversion
+  if (hex.startsWith("0x")) {
+    hex = hex.slice(2);
+  }
+  var str = '';
+  for (var i = 0; (i < hex.length && hex.substr(i, 2) !== '00'); i += 2)
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+  return str;
+}
+
 function diesChange(element) {
   if (element.checked) {
     $($(element).parent().find("select")[0]).prop("disabled", false);
@@ -196,15 +207,15 @@ function contractChanged() {
           erc20instance = erc20.at(address);
         }
         erc20instance.symbol.call((err, symbol) => {
-          erc20Symbol = symbol;
+          erc20Symbol = symbol.startsWith("0x") ? hex2a(symbol) : symbol;
           erc20instance.decimals.call((err, decimals) => {
             instance.requiredStake.call((err, stake) => {
               if (!err && stake && decimals) {
                 const numDecimals = decimals.toNumber();
                 const stakeBn = new BN(stake.toString()).div(new BN(10).pow(new BN(numDecimals)));
                 stakeString = stakeBn.toString();
-                $("#stake").val(`Stake ${stakeString} ${symbol}`);
-                $("#withdraw").val(`Withdraw ${stakeString} ${symbol}`);
+                $("#stake").val(`Stake ${stakeString} ${erc20Symbol}`);
+                $("#withdraw").val(`Withdraw ${stakeString} ${erc20Symbol}`);
               }
             });
           });
