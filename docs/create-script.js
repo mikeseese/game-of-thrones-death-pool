@@ -44,7 +44,7 @@ function deploy() {
 
   const erc20instance = erc20.at(tokenContract);
   erc20instance.decimals.call((err, decimals) => {
-    const stake = new BN(stakeRequired).mul(new BN(10).pow(new BN(decimals)));
+    const stake = new BN(stakeRequired).mul(new BN(10).pow(new BN(decimals.toString())));
     contract.new(
       truthContract,
       tokenContract,
