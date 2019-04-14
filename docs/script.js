@@ -31,41 +31,43 @@ function contractChanged() {
   isValid = isValid && contractAddress.length === 42;
   isValid = isValid && haveWeb3;
 
-  instance = contract.at(contractAddress);
+  if (isValid) {
+    instance = contract.at(contractAddress);
 
-  instance.tokenAddress.call((err, address) => {
-    if (!err && result) {
-      const erc20instance = erc20.at(address);
-      erc20instance.decimals.call((err, decimals) => {
-        instance.requiredStake.call((err, stake) => {
-          if (!err && stake && decimals) {
-            $("#stake").css("display", "block");
-          }
-          else {
-            $("#stake").css("display", "none");
-          }
-        });
-      })
-    }
-  });
+    instance.tokenAddress.call((err, address) => {
+      if (!err && result) {
+        const erc20instance = erc20.at(address);
+        erc20instance.decimals.call((err, decimals) => {
+          instance.requiredStake.call((err, stake) => {
+            if (!err && stake && decimals) {
+              $("#stake").css("display", "block");
+            }
+            else {
+              $("#stake").css("display", "none");
+            }
+          });
+        })
+      }
+    });
 
-  instance.havePredicted.call((err, result) => {
-    if (!err && result === true) {
-      $("#stake").css("display", "block");
-    }
-    else {
-      $("#stake").css("display", "none");
-    }
-  });
+    instance.havePredicted.call((err, result) => {
+      if (!err && result === true) {
+        $("#stake").css("display", "block");
+      }
+      else {
+        $("#stake").css("display", "none");
+      }
+    });
 
-  instance.haveStaked.call((err, result) => {
-    if (!err && result === true) {
-      $("#withdraw").css("display", "block");
-    }
-    else {
-      $("#withdraw").css("display", "none");
-    }
-  });
+    instance.haveStaked.call((err, result) => {
+      if (!err && result === true) {
+        $("#withdraw").css("display", "block");
+      }
+      else {
+        $("#withdraw").css("display", "none");
+      }
+    });
+  }
 
   if (isValid) {
     $("#prediction").css("display", "block");
