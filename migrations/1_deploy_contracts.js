@@ -5,9 +5,8 @@ const BN = require("bn.js");
 
 module.exports = async function(deployer) {
   const tokenInstance = await SimpleToken.new();
-  console.log(tokenInstance.address);
+  console.log("Token address: ", tokenInstance.address);
   const truthInstance = await deployer.deploy(GOTDeathPoolTruth);
-  console.log(truthInstance.address);
   const poolInstance = await deployer.deploy(
     GOTDeathPool,
     truthInstance.address,

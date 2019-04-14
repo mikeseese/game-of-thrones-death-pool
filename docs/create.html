@@ -6,31 +6,34 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
+    <script type="text/javascript" src="bn.js?v=0"></script>
     <script type="text/javascript" src="web3.min.js?v=0"></script>
     <script type="text/javascript" src="characters.js?v=0"></script>
+    <script type="text/javascript" src="erc20.js?v=0"></script>
     <script type="text/javascript" src="create-script.js?v=0"></script>
-  </body>
 
-  <label for="truth_contract">Truth Contract Address</label><br/>
-  <input type="text" id="truth_contract" name="truth_contract" placeholder="0x" /><br/>
-  <a href="create-truth.html">Create a Truth Contract (not required)!</a><br />
-  <br />
-  <br />
-  <label for="token_contract">ERC20 Token Contract Address</label><br/>
-  <input type="text" id="token_contract" name="token_contract" placeholder="0x" /><br/>
-  <br />
-  <br />
-  <label for="stake_required">Stake Amount (full-unit amount, not the "wei" amount; i.e. $20 would be '20' DAI)</label><br/>
-  <input type="text" id="stake_required" name="stake_required" placeholder="20" /><br/>
-  <br />
-  <br />
-  <label for="can_disperse">Owner Can Arbitrarily Disperse Funds After Pool Completed</label><br/>
-  <input type="checkbox" id="can_disperse" name="can_disperse" checked="checked" /><br />
-  <br />
-  <br />
-  <label for="skip_first_episode">Pool Starts Counting Points on Second Episode</label><br/>
-  <input type="checkbox" id="skip_first_episode" name="skip_first_episode" /><br />
-  <br />
-  <br />
-  <input type="button" value="Deploy" onclick="deploy()" />
+    <div id="error" style="display: none; color: red;"></div><br />
+    <label for="truth_contract">Truth Contract Address</label><br/>
+    <input type="text" id="truth_contract" name="truth_contract" placeholder="0x" /><br/>
+    <a href="create-truth.html">Create a Truth Contract (not required)!</a><br />
+    <br />
+    <br />
+    <label for="token_contract">ERC20 Token Contract Address</label><br/>
+    <input type="text" id="token_contract" name="token_contract" placeholder="0x" /><br/>
+    <br />
+    <br />
+    <label for="stake_required">Stake Amount (full-unit amount, not the "wei" amount; i.e. $20 would be '20' DAI)</label><br/>
+    <input type="text" id="stake_required" name="stake_required" placeholder="20" /><br/>
+    <br />
+    <br />
+    <label for="can_disperse">Owner Can Arbitrarily Disperse Funds After Pool Completed</label><br/>
+    <input type="checkbox" id="can_disperse" name="can_disperse" checked="checked" /><br />
+    <br />
+    <br />
+    <label for="skip_first_episode">Pool Starts Counting Points on Second Episode</label><br/>
+    <input type="checkbox" id="skip_first_episode" name="skip_first_episode" /><br />
+    <br />
+    <br />
+    <input type="button" value="Deploy" onclick="deploy()" />
+  </body>
 </html>
