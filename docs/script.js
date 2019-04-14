@@ -282,7 +282,9 @@ function getUrlParameter(name) {
 
 function copyLink() {
   const copyText = `https://seesemichaelj.github.io/game-of-thrones-death-pool/?contract=${$("#pool_contract").val()}`;
-  copyText.select();
+
+  $("#copy").val(copyText);
+  $("#copy").select();
   document.execCommand("copy");
 
   $("#share").val("Copied!");
