@@ -222,6 +222,7 @@ function contractChanged() {
         $("#prediction").css("display", "none");
         $("#leaderboard_toggle").css("display", "block");
         $("#truth_toggle").css("display", "block");
+        $("#withdraw").css("display", "none");
 
         instance.TruthContract.call((err, result) => {
           if (!err && result) {
@@ -262,7 +263,7 @@ function contractChanged() {
                           }
                           for (let i = 0; i < characters.length - 2; i++) {
                             if (dies[i]) {
-                              $(`#episode${deathEpisode[i]} ul`)[0].append(characters[i]);
+                              $(`#episode${deathEpisode[i]} ul`)[0].append(`<li>${characters[i]}</li>`);
                             }
                           }
                           $("#first_to_die_truth").text(characters[firstToDie]);

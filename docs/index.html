@@ -67,7 +67,7 @@
 
     <label for="pool_contract">Pool Contract Address</label>
     <input type="text" id="pool_contract" name="pool_contract" placeholder="0x" onkeyup="contractChanged()" onchange="contractChanged()" onpaste="contractChanged()" /> <input type="button" id="share" onclick="copyLink()" value="Copy Shareable Link!" /><br/>
-    <a href="create.html">Create a Pool!</a> <a href="admin.html">Admin Dashboard for Pool Contracts</a><br /> <a href="admin-truth.html">Admin Dashboard for Truth Contracts</a><br />
+    <a href="create.html">Create a Pool!</a> <a href="admin.html">Admin Dashboard for Pool Contracts</a> <a href="admin-truth.html">Admin Dashboard for Truth Contracts</a><br />
     <br />
     <input id="stake" style="display: none;" type="button" value="Stake" onclick="stake()" /><br />
     <br />
@@ -81,48 +81,48 @@
       <ul style="list-style-type: decimal">
       </ul>
     </div>
-    <input id="truth_toggle" type="button" style="display: none;" onclick="toggleTruth()" value="SPOILER ALERT: Show/Hide deaths"><br/>
+    <input id="truth_toggle" type="button" style="display: none;" onclick="toggleTruth()" value="SPOILER ALERT: Show/Hide True Current State"><br/>
     <br />
     <div id="truth" style="display: none;">
       <div id="episodes">
         <div id="episode1">
-          <span>Deaths in Episode 1</span>
+          <span><strong>Deaths in Episode 1</strong></span>
           <ul>
           </ul>
         </div>
         <div id="episode2">
-          <span>Deaths in Episode 2</span>
+          <span><strong>Deaths in Episode 2</strong></span>
           <ul>
           </ul>
         </div>
         <div id="episode3">
-          <span>Deaths in Episode 3</span>
+          <span><strong>Deaths in Episode 3</strong></span>
           <ul>
           </ul>
         </div>
         <div id="episode4">
-          <span>Deaths in Episode 4</span>
+          <span><strong>Deaths in Episode 4</strong></span>
           <ul>
           </ul>
         </div>
         <div id="episode5">
-          <span>Deaths in Episode 5</span>
+          <span><strong>Deaths in Episode 5</strong></span>
           <ul>
           </ul>
         </div>
         <div id="episode6">
-          <span>Deaths in Episode 6</span>
+          <span><strong>Deaths in Episode 6</strong></span>
           <ul>
           </ul>
         </div>
       </div>
-      <label for="first_to_die_truth">First to Die</label>
+      <label for="first_to_die_truth"><strong>First to Die:</strong></label>
       <span id="first_to_die_truth"></span><br />
-      <label for="first_to_die_after_first_episode_truth">First to Die after First Episode</label>
+      <label for="first_to_die_after_first_episode_truth"><strong>First to Die after First Episode:</strong></label>
       <span id="first_to_die_after_first_episode_truth"></span><br />
-      <label for="last_to_die_truth">Last to Die</label>
+      <label for="last_to_die_truth"><strong>Last to Die:</strong></label>
       <span id="last_to_die_truth"></span><br />
-      <label for="last_on_throne_truth">Last on Throne</label>
+      <label for="last_on_throne_truth"><strong>Last on Throne:</strong></label>
       <span id="last_on_throne_truth"></span><br />
     </div>
 
