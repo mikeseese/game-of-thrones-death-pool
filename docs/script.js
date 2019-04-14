@@ -188,7 +188,13 @@ function contractChanged() {
 
     instance.tokenAddress.call((err, address) => {
       if (!err && address) {
-        const erc20instance = erc20.at(address);
+        let erc20instance;
+        if (address === "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359") {
+          erc20instance = web3js.eth.contract(daiabi).at(address);
+        }
+        else {
+          erc20instance = erc20.at(address);
+        }
         erc20instance.symbol.call((err, symbol) => {
           erc20Symbol = symbol;
           erc20instance.decimals.call((err, decimals) => {
@@ -238,7 +244,7 @@ function contractChanged() {
 
         instance.TruthContract.call((err, result) => {
           if (!err && result) {
-            $.getJSON("GOTDeathPoolTruth.json?v=4", (data) => {
+            $.getJSON("GOTDeathPoolTruth.json?v=5", (data) => {
               artifact = data;
 
               const truthContract = web3js.eth.contract(data.abi);
@@ -382,7 +388,7 @@ window.addEventListener('load', function() {
   web3js.eth.defaultAccount = web3js.eth.accounts[0];
   erc20 = web3js.eth.contract(erc20abi);
 
-  $.getJSON("GOTDeathPool.json?v=4", (data) => {
+  $.getJSON("GOTDeathPool.json?v=5", (data) => {
     artifact = data;
 
     contract = web3js.eth.contract(artifact.abi);
