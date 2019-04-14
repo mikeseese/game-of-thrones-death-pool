@@ -22,8 +22,18 @@ let contract;
 let instance;
 let erc20;
 let lastAddress;
+let stakeString;
+let erc20Symbol;
 
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
+
+function stake() {
+  $("#characters").children.map((element) => {
+    const dies = element.find("input").val();
+    console.log(dies);
+  });
+  instance.predict();
+}
 
 function contractChanged() {
   const contractAddress = $("#pool_contract").val();
@@ -43,19 +53,15 @@ function contractChanged() {
       if (!err && address) {
         const erc20instance = erc20.at(address);
         erc20instance.symbol.call((err, symbol) => {
+          erc20Symbol = symbol;
           erc20instance.decimals.call((err, decimals) => {
             instance.requiredStake.call((err, stake) => {
               if (!err && stake && decimals) {
                 const numDecimals = decimals.toNumber();
                 const stakeBn = new BN(stake.toString()).div(new BN(10).pow(new BN(numDecimals)));
-                let stakeString = stakeBn.toString();
-                console.log(stakeString);
-                $("#stake").css("display", "block");
+                stakeString = stakeBn.toString();
                 $("#stake").val(`Stake ${stakeString} ${symbol}`);
                 $("#withdraw").val(`Withdraw ${stakeString} ${symbol}`);
-              }
-              else {
-                $("#stake").css("display", "none");
               }
             });
           });
