@@ -33,8 +33,8 @@ function deploy() {
   const truthContract = $("#truth_contract").val();
   const tokenContract = $("#token_contract").val();
   const stakeRequired = $("#stake_required").val();
-  const canDisperse = $("#can_disperse").checked;
-  const skipFirstEpisode = $("#skip_first_episode").checked;
+  const canDisperse = $("#can_disperse")[0].checked;
+  const skipFirstEpisode = $("#skip_first_episode")[0].checked;
 
   if (!truthContract || !tokenContract || !stakeRequired) {
     $("#error").text("Make sure to provide all details");
