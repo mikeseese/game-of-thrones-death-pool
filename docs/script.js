@@ -28,7 +28,7 @@ let erc20Symbol;
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
 
 function diesChange(element) {
-  if ($(element).checked) {
+  if (element.checked) {
     $($(element).parent().find("select")[0]).prop("disabled", false);
   }
   else {
