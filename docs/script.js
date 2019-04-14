@@ -42,18 +42,20 @@ function stake() {
 
   $("#error").css("display", "none");
 
-  $("#characters").children().map((idx, element) => {
+  const children = $("#characters").children();
+  for (let i = 0; i < children.length; i++) {
+    const element = children[i];
     dies.push($(element).find("input")[0].checked);
     const episode = $(element).find("select").val();
     if (episode === "null") {
-      $("#error").text(`Pick the episode ${characters[idx]} dies`);
+      $("#error").text(`Pick the episode ${characters[i]} dies`);
       $("#error").css("display", "block");
       return;
     }
     else {
       deathEpisode.push(parseInt(episode));
     }
-  });
+  }
 
   let firstToDie = $("#first_to_die").val();
   if (firstToDie === "null") {
