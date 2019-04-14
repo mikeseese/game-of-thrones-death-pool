@@ -43,7 +43,13 @@ function stake() {
 
   instance.tokenAddress.call((err, address) => {
     if (!err && address) {
-      const erc20instance = erc20.at(address);
+      let erc20instance;
+      if (address === "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359") {
+        erc20instance = web3js.eth.contract(daiabi).at(address);
+      }
+      else {
+        erc20instance = erc20.at(address);
+      }
       instance.requiredStake.call((err, stake) => {
         instance.stake.sendTransaction((err, result) => {
           if (err) {
