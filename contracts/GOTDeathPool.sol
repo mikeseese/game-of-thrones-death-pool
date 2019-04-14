@@ -92,7 +92,7 @@ contract GOTDeathPool is Ownable {
   }
 
   modifier didNotStake() {
-    require(pool[msg.sender] == 0, "You already have any funds in the pool");
+    require(pool[msg.sender] == 0, "You already have funds in the pool");
     _;
   }
 

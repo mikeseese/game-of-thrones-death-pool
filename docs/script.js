@@ -64,7 +64,7 @@ function stake() {
 function withdraw() {
   $("#error").css("display", "none");
 
-  instance.stake.sendTransaction((err, result) => {
+  instance.withdraw.sendTransaction((err, result) => {
     if (err) {
       $("#error").text(err);
       $("#error").css("display", "block");
