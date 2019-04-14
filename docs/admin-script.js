@@ -34,7 +34,7 @@ function disperse() {
       const erc20instance = erc20.at(address);
       erc20instance.decimals.call((err, decimals) => {
         const account = $("#account").val();
-        const amount = parseInt($("#account").val());
+        const amount = parseInt($("#amount").val());
         const numDecimals = decimals.toNumber();
         const adjustedAmount = new BN(amount).div(new BN(10).pow(new BN(numDecimals)));
         instance.disperse.sendTransaction(account, adjustedAmount, (err, result) => {
