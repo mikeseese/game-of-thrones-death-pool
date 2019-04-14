@@ -251,19 +251,7 @@ function contractChanged() {
 
     instance._canClaim.call(async (err, result) => {
       if (!err && result === true) {
-        const places = [];
-        places.push(await instance._firstPlace.call());
-        places.push(await instance._secondPlace.call());
-        places.push(await instance._thirdPlace.call());
-        places.push(await instance._fourthPlace.call());
-        places.push(await instance._fifthPlace.call());
-        if (places.includes(web3js.eth.defaultAccount)) {
-          $("#claim").css("display", "block");
-        }
-        else {
-          $("#error").text("You did not place");
-          $("#error").css("display", "block");
-        }
+        $("#claim").css("display", "block");
       }
       else {
         $("#claim").css("display", "none");
@@ -280,7 +268,16 @@ function contractChanged() {
           const points = result["0"];
           const addresses = result["1"];
           for (let i = 0; i < points.length; i++) {
-            const name = await instance.getName.call(addresses[i]);
+            const name = await new Promise((resolve, reject) => {
+              instance.getName.call(addresses[i], (err, result) => {
+                if (err) {
+                  reject(err);
+                }
+                else {
+                  resolve(result);
+                }
+              })
+            });
             $(leaderboard).append(leaderboardInsert.replace(/PLAYER_NAME/g, name).replace(/PLAYER_POINTS/g, points[i]))
           }
         }
