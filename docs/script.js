@@ -45,15 +45,21 @@ function stake() {
   const children = $("#characters").children();
   for (let i = 0; i < children.length; i++) {
     const element = children[i];
-    dies.push($(element).find("input")[0].checked);
-    const episode = $(element).find("select").val();
-    if (episode === "null") {
-      $("#error").text(`Pick the episode ${characters[i]} dies`);
-      $("#error").css("display", "block");
-      return;
+    const charDies = $(element).find("input")[0].checked;
+    dies.push(charDies);
+    if (charDies) {
+      const episode = $(element).find("select").val();
+      if (episode === "null") {
+        $("#error").text(`Pick the episode ${characters[i]} dies`);
+        $("#error").css("display", "block");
+        return;
+      }
+      else {
+        deathEpisode.push(parseInt(episode));
+      }
     }
     else {
-      deathEpisode.push(parseInt(episode));
+      deathEpisode.push(0);
     }
   }
 
