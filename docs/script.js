@@ -225,23 +225,55 @@ function contractChanged() {
 
         instance.TruthContract.call((err, result) => {
           if (!err && result) {
-            $.getJSON("GOTDeathPoolTruth.json?v=1", (data) => {
+            $.getJSON("GOTDeathPoolTruth.json?v=2", (data) => {
               artifact = data;
 
               const truthContract = web3js.eth.contract(data.abi);
               const truthInstance = truthContract.at(result);
-              truthInstance.GetTruthState.call((err, result) => {
-                if (!err && result) {
-                  for (let i = 0; i < characters.length - 2; i++) {
-                    if (result.dies[i]) {
-                      $(`#episode${result.deathEpisode[i]} ul`)[0].append(characters[i]);
-                    }
-                  }
-                  $("#first_to_die_truth").text(characters[result.firstToDie]);
-                  $("#first_to_die_after_first_episode_truth").text(characters[result.firstToDieAfterFirstEpisode]);
-                  $("#last_to_die_truth").text(characters[result.lastToDie]);
-                  $("#last_on_throne_truth").text(characters[result.lastOnThrone]);
+              truthInstance.GetTruthDies.call((err, dies) => {
+                if (err) {
+                  console.err(err);
+                  return;
                 }
+                truthInstance.GetTruthDeathEpisode.call((err, deathEpisode) => {
+                  if (err) {
+                    console.err(err);
+                    return;
+                  }
+                  truthInstance.GetTruthFirstToDie.call((err, firstToDie) => {
+                    if (err) {
+                      console.err(err);
+                      return;
+                    }
+                    truthInstance.GetTruthFirstToDieAfterFirstEpisode.call((err, firstToDieAfterFirstEpisode) => {
+                      if (err) {
+                        console.err(err);
+                        return;
+                      }
+                      truthInstance.GetTruthLastToDie.call((err, lastToDie) => {
+                        if (err) {
+                          console.err(err);
+                          return;
+                        }
+                        truthInstance.GetTruthLastOnThrone.call((err, lastOnThrone) => {
+                          if (err) {
+                            console.err(err);
+                            return;
+                          }
+                          for (let i = 0; i < characters.length - 2; i++) {
+                            if (dies[i]) {
+                              $(`#episode${deathEpisode[i]} ul`)[0].append(characters[i]);
+                            }
+                          }
+                          $("#first_to_die_truth").text(characters[firstToDie]);
+                          $("#first_to_die_after_first_episode_truth").text(characters[firstToDieAfterFirstEpisode]);
+                          $("#last_to_die_truth").text(characters[lastToDie]);
+                          $("#last_on_throne_truth").text(characters[lastOnThrone]);
+                        });
+                      });
+                    });
+                  });
+                })
               })
             });
           }
@@ -328,7 +360,7 @@ window.addEventListener('load', function() {
   web3js.eth.defaultAccount = web3js.eth.accounts[0];
   erc20 = web3js.eth.contract(erc20abi);
 
-  $.getJSON("GOTDeathPool.json?v=1", (data) => {
+  $.getJSON("GOTDeathPool.json?v=2", (data) => {
     artifact = data;
 
     contract = web3js.eth.contract(artifact.abi);

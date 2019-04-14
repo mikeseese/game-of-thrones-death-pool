@@ -39,6 +39,30 @@ contract GOTDeathPoolTruth is Ownable {
     return TruthState;
   }
 
+  function GetTruthDies() public view returns (bool[NumCharacters] memory) {
+    return TruthState.dies;
+  }
+
+  function GetTruthDeathEpisode() public view returns (uint8[NumCharacters] memory) {
+    return TruthState.deathEpisode;
+  }
+
+  function GetTruthFirstToDie() public view returns (GOTDeathPoolCommon.Character) {
+    return TruthState.firstToDie;
+  }
+
+  function GetTruthFirstToDieAfterFirstEpisode() public view returns (GOTDeathPoolCommon.Character) {
+    return TruthState.firstToDieAfterFirstEpisode;
+  }
+
+  function GetTruthLastToDie() public view returns (GOTDeathPoolCommon.Character) {
+    return TruthState.lastToDie;
+  }
+
+  function GetTruthLastOnThrone() public view returns (GOTDeathPoolCommon.Character) {
+    return TruthState.lastOnThrone;
+  }
+
   function logFirstToDie(GOTDeathPoolCommon.Character character) public onlyOwner {
     TruthState.firstToDie = character;
   }
