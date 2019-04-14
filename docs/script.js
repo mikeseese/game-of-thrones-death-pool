@@ -26,6 +26,7 @@ let stakeString;
 let erc20Symbol;
 
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
+const leaderboardInsert = `<li>PLAYER_NAME: PLAYER_POINTS Points</option>`;
 
 function diesChange(element) {
   if (element.checked) {
@@ -189,10 +190,8 @@ function contractChanged() {
 
     instance.havePredicted.call((err, result) => {
       if (!err && result === true) {
-        $("#stake").css("display", "block");
       }
       else {
-        $("#stake").css("display", "none");
       }
     });
 
@@ -202,7 +201,25 @@ function contractChanged() {
         $("#withdraw").css("display", "block");
       }
       else {
+        $("#stake").css("display", "block");
         $("#withdraw").css("display", "none");
+      }
+    });
+
+    instance.calculatePoints.call(async (err, result) => {
+      if (err) {
+        console.error(err);
+      }
+      else {
+        const leaderboard = $("#leaderboard ul")[0];
+        if (leaderboard) {
+          const points = result["0"];
+          const addresses = result["1"];
+          for (let i = 0; i < points.length; i++) {
+            const name = await instance.getName.call(addresses[i]);
+            $(leaderboard).append(leaderboardInsert.replace(/PLAYER_NAME/g, name).replace(/PLAYER_POINTS/g, points[i]))
+          }
+        }
       }
     });
   }
@@ -210,11 +227,23 @@ function contractChanged() {
   if (isValid) {
     $("#prediction").css("display", "block");
     $("#share").css("display", "block");
+    $("#stake").css("display", "block");
+    $("#leaderboard_toggle").css("display", "block");
   }
   else {
     $("#prediction").css("display", "none");
     $("#share").css("display", "none");
+    $("#stake").css("display", "none");
+    $("#leaderboard_toggle").css("display", "none");
   }
+}
+
+function toggleInstructions() {
+  $("#instructions").toggle();
+}
+
+function toggleLeaderboard() {
+  $("#leaderboard").toggle();
 }
 
 window.addEventListener('load', function() {
@@ -250,25 +279,25 @@ window.addEventListener('load', function() {
     if (i < characters.length - 2) {
       $("#characters").append(
         characterInsert
-        .replace(/CHARACTER_NAME/, characters[i])
-        .replace(/CHARACTER_IDX/, i)
+        .replace(/CHARACTER_NAME/g, characters[i])
+        .replace(/CHARACTER_IDX/g, i)
       );
       $("#first_to_die").append(
         characterOptionInsert
-        .replace(/CHARACTER_NAME/, characters[i])
-        .replace(/CHARACTER_IDX/, i)
+        .replace(/CHARACTER_NAME/g, characters[i])
+        .replace(/CHARACTER_IDX/g, i)
       );
       $("#last_to_die").append(
         characterOptionInsert
-        .replace(/CHARACTER_NAME/, characters[i])
-        .replace(/CHARACTER_IDX/, i)
+        .replace(/CHARACTER_NAME/g, characters[i])
+        .replace(/CHARACTER_IDX/g, i)
       );
     }
 
     $("#last_on_thrown").append(
       characterOptionInsert
-      .replace(/CHARACTER_NAME/, characters[i])
-      .replace(/CHARACTER_IDX/, i)
+      .replace(/CHARACTER_NAME/g, characters[i])
+      .replace(/CHARACTER_IDX/g, i)
     );
   }
 });

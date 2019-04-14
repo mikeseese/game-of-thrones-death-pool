@@ -12,6 +12,59 @@
     <script type="text/javascript" src="erc20.js?v=0"></script>
     <script type="text/javascript" src="script.js?v=0"></script>
 
+    <p>
+      <strong>Use this dApp at your own risk</strong>. While it has been thoroughly tested
+      and I personally will be using it, I have not spent significant time
+      ensuring its security. I am not responsible for any funds you may lose.
+    </p>
+    <p>
+      You can find the source code on <a href="https://github.com/seesemichaelj/game-of-thrones-death-pool">GitHub</a>.
+      The front end code you see here can be found
+      <a href="https://github.com/seesemichaelj/game-of-thrones-death-pool/tree/master/docs">in the docs folder</a>.
+    </p>
+
+    <hr />
+
+    <input type="button" onclick="toggleInstructions()" value="Show/Hide Instructions"><br/>
+    <br />
+    <div id="instructions" style="display: none;">
+      <p>
+        This is a Game of Thrones Season 8 Death Pool that runs decentralized, and open source, on Ethereum.<br />
+        You can join a pool by entering your pool contract address below, or you can create one by clicking the link!<br />
+        <br />
+        The concept is simple:<br />
+        1. Someone creates a pool that references a truth state contract (which you can also deploy yourself)<br />
+        &nbsp;&nbsp;a. The creator specifies an ERC20 token to use (defaults to DAI) for staking<br />
+        &nbsp;&nbsp;b. The creator specifies a fixed amount that is required for staking into the pool<br />
+        &nbsp;&nbsp;c. The creator can enable/disable the ability to arbitrarily disperse funds regardless of points when the round is complete (to handle special cases)<br />
+        &nbsp;&nbsp;d. Since I finished this so close to the premier date, the creater can also tell the pool contract to not start counting points until Episode 2<br />
+        2. The contract address is shared, users make predictions below.<br />
+        3. The user will stake the required amount by pressing the Stake button. This sends 2 transactions: 1 to authorize the staking amount and 1 to perform the stake<br />
+        3. Users can update their prediction or withdraw their stake before predictions are closed<br />
+        4. The owner of the pool contract can close predictions<br />
+        5. Users can come see the leaderboard as the owner of the truth contract records episodes<br />
+        6. When the truth contract is set to be complete, the owner of the pool contract can mark the pool complete.<br />
+        7. If there are any funds needing dispersal before claiming can begin, this happens now.<br />
+        8. The owner of the pool contract can set the pool contract to be claimable. Funds can still be dispsered for whatever reasons (if enabled).<br />
+        6. If users place in the top 5, they can claim their award (pool distributions are set to: 51%, 26%, 13%, 7%, 3%)<br />
+        <br />
+        Points are given as follows:<br />
+        <ul>
+          <li>+1 point for correctly guessing whether or not a character dies</li>
+          <li>If you correctly guess a character dies, you can get +1 bonus point for correctly guessing which episode the character dies in</li>
+          <li>-1 point for incorrectly guessing whether or not a character dies</li>
+          <li>+1 point for correctly guessing the first character to die</li>
+          <li>+1 point for correctly guessing the last character to die</li>
+          <li>+1 point for correctly guessing the last character to sit on the Iron Throne/rule Westeros</li>
+        </ul>
+        If the contract is set to skip the first episode, no points will be added/subtracted from deaths in that episode.<br />
+        Also the "first to die" is the first character to die <strong>after the first episode</strong>.
+      </p>
+
+      <hr />
+      <br />
+    </div>
+
     <label for="pool_contract">Pool Contract Address</label>
     <input type="text" id="pool_contract" name="pool_contract" placeholder="0x" onkeyup="contractChanged()" onchange="contractChanged()" onpaste="contractChanged()" /> <input type="button" id="share" onclick="copyLink()" value="Copy Shareable Link!" /><br/>
     <a href="create.html">Create a Pool!</a><br />
@@ -20,6 +73,14 @@
     <br />
     <input id="withdraw" style="display: none;" type="button" value="Withdraw" onclick="withdraw()" /><br />
     <br />
+
+    <input id="leaderboard_toggle" type="button" style="display: none;" onclick="toggleLeaderboard()" value="Show/Hide leaderboard"><br/>
+    <br />
+    <div id="leaderboard" style="display: none;">
+      <ul style="list-style-type: decimal">
+      </ul>
+    </div>
+
     <div id="error" style="display: none; color: red;"></div>
     <div id="prediction" style="display: none;">
       <label for="name">Your Name (for the leaderboards)</label>
