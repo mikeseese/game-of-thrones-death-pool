@@ -7,11 +7,16 @@
   <body>
     <script type="text/javascript" src="web3.min.js?v=0"></script>
     <script type="text/javascript" src="characters.js?v=0"></script>
+    <script type="text/javascript" src="erc20.js?v=0"></script>
     <script type="text/javascript" src="script.js?v=0"></script>
 
     <label for="pool_contract">Pool Contract Address</label>
     <input type="text" id="pool_contract" name="pool_contract" placeholder="0x" onkeyup="contractChanged()" onchange="contractChanged()" onpaste="contractChanged()" /><br/>
     <a href="create.html">Create a Pool!</a><br />
+    <br />
+    <input id="stake" style="display: none;" type="button" value="Stake" onclick="stake()" /><br />
+    <br />
+    <input id="withdraw" style="display: none;" type="button" value="Withdraw" onclick="withdraw()" /><br />
     <br />
     <div id="prediction" style="display: none;">
       <div id="characters">
@@ -36,6 +41,7 @@
           </select>
         </div>
       </div>
+      <input type="button" value="Predict" onclick="predict()" />
     </div>
   </body>
 </html>

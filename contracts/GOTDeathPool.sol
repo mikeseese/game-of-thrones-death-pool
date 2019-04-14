@@ -1,4 +1,4 @@
-pragma solidity ^0.5.5;
+pragma solidity ^0.5.7;
 pragma experimental ABIEncoderV2;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
@@ -14,6 +14,7 @@ contract GOTDeathPool is Ownable {
 
   GOTDeathPoolTruth private TruthContract;
   bool private _open;
+  bool private _canDisperse;
   bool private _canClaim;
   bool private _ownerCanDisperse;
   uint256 private _stakeRequired;
@@ -52,6 +53,11 @@ contract GOTDeathPool is Ownable {
 
   modifier canClaim() {
     require(_canClaim == true, "You cannot claim your bounty yet");
+    _;
+  }
+
+  modifier canDisperse() {
+    require(_canDisperse == true, "You cannot disperse awards yet. call complete()");
     _;
   }
 
@@ -113,6 +119,7 @@ contract GOTDeathPool is Ownable {
     TruthContract = truth;
     _open = true;
     _canClaim = false;
+    _canDisperse = false;
     _token = token;
     _stakeRequired = stakeRequired;
     _ownerCanDisperse = canDisperse;
@@ -139,6 +146,18 @@ contract GOTDeathPool is Ownable {
     return names[a];
   }
 
+  function tokenAddress() public view returns(address) {
+    return address(_token);
+  }
+
+  function havePredicted() public view returns(bool) {
+    return predictions[msg.sender].isValid;
+  }
+
+  function haveStaked() public view returns(bool) {
+    return pool[msg.sender] > 0;
+  }
+
   function open() public onlyOwner {
     _open = true;
     _canClaim = false;
@@ -161,6 +180,7 @@ contract GOTDeathPool is Ownable {
     predictionsOpen
   {
     GOTDeathPoolCommon.Prediction memory prediction;
+    prediction.isValid = true;
     prediction.dies = dies;
     prediction.deathEpisode = deathEpisode;
     prediction.firstToDie = firstToDie;
@@ -260,7 +280,7 @@ contract GOTDeathPool is Ownable {
   }
 
   function complete() public onlyOwner answersAvailable isIncomplete {
-    _canClaim = true;
+    _canDisperse = true;
     int16[] memory resultPoints;
     address[] memory resultAddresses;
 
@@ -336,7 +356,7 @@ contract GOTDeathPool is Ownable {
     _completedBalance = _token.balanceOf(address(this));
   }
 
-  function disperse(address recipient, uint256 amount) public onlyOwner canClaim ownerCanDisperse {
+  function disperse(address recipient, uint256 amount) public onlyOwner canDisperse ownerCanDisperse {
     uint256 poolBalance = _token.balanceOf(address(this));
     if (poolBalance >= amount) {
       _token.safeTransfer(recipient, amount);
@@ -344,6 +364,10 @@ contract GOTDeathPool is Ownable {
     else {
       _token.safeTransfer(recipient, poolBalance);
     }
+  }
+
+  function allowClaiming() public onlyOwner answersAvailable isIncomplete {
+    _canClaim = true;
   }
 
   function claim() public canClaim didStake didNotClaim {

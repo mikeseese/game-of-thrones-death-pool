@@ -370,6 +370,10 @@ contract("GOTDeathPool", accounts => {
     await poolInstance.complete();
   });
 
+  it("sets pool to be claimable", async () => {
+    await poolInstance.allowClaiming();
+  });
+
   it("fails to claim while not placing", async () => {
     const leaderboard = await sortedLeaderboard();
     try {

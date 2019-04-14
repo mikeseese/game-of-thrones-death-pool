@@ -18,15 +18,54 @@ const characterInsert = `
 `;
 
 let artifact;
+let contract;
+let instance;
+let erc20;
 
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
 
 function contractChanged() {
-  const contract = $("#pool_contract").val();
+  const contractAddress = $("#pool_contract").val();
   let isValid = true;
   isValid = isValid && contract.startsWith("0x");
   isValid = isValid && contract.length === 42;
-  //isValid = isValid && haveWeb3;
+  isValid = isValid && haveWeb3;
+
+  instance = contract.at(contractAddress);
+
+  instance.tokenAddress.call((err, address) => {
+    if (!err && result) {
+      const erc20instance = erc20.at(address);
+      erc20instance.decimals.call((err, decimals) => {
+        instance.requiredStake.call((err, stake) => {
+          if (!err && stake && decimals) {
+            $("#stake").css("display", "block");
+          }
+          else {
+            $("#stake").css("display", "none");
+          }
+        });
+      })
+    }
+  });
+
+  instance.havePredicted.call((err, result) => {
+    if (!err && result === true) {
+      $("#stake").css("display", "block");
+    }
+    else {
+      $("#stake").css("display", "none");
+    }
+  });
+
+  instance.haveStaked.call((err, result) => {
+    if (!err && result === true) {
+      $("#withdraw").css("display", "block");
+    }
+    else {
+      $("#withdraw").css("display", "none");
+    }
+  });
 
   if (isValid) {
     $("#prediction").css("display", "block");
@@ -47,13 +86,17 @@ window.addEventListener('load', function() {
     web3js = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
   }
 
+  erc20 = web3js.eth.contract(erc20abi);
+
   $.getJSON("GOTDeathPool.json", (data) => {
     artifact = data;
-  });
 
-  // Now you can start your app & access web3 freely:
-  haveWeb3 = true;
-  contractChanged();
+    contract = web3js.eth.contract(artifact.abi);
+  
+    // Now you can start your app & access web3 freely:
+    haveWeb3 = true;
+    contractChanged();
+  });
 
   for (let i = 0; i < characters.length; i++) {
     if (i < characters.length - 2) {

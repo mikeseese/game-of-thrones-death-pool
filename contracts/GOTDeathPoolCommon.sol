@@ -1,4 +1,4 @@
-pragma solidity ^0.5.5;
+pragma solidity ^0.5.7;
 
 library GOTDeathPoolCommon {
   uint8 constant NumCharacters = 30;
@@ -37,6 +37,7 @@ library GOTDeathPoolCommon {
   }
 
   struct Prediction {
+    bool isValid;
     bool[NumCharacters] dies;
     uint8[NumCharacters] deathEpisode;
     Character firstToDie;

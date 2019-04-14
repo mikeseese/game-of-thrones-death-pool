@@ -6,10 +6,8 @@
   </head>
   <body>
     <script type="text/javascript" src="web3.min.js?v=0"></script>
-    <script type="text/javascript" src="abi.js?v=0"></script>
-    <script type="text/javascript" src="bytecode.js?v=0"></script>
     <script type="text/javascript" src="characters.js?v=0"></script>
-    <script type="text/javascript" src="script.js?v=0"></script>
+    <script type="text/javascript" src="create-script.js?v=0"></script>
   </body>
 
   <label for="truth_contract">Truth Contract Address</label><br/>
@@ -32,5 +30,5 @@
   <input type="checkbox" id="skip_first_episode" name="skip_first_episode" /><br />
   <br />
   <br />
-  <input type="button" value="Deploy" />
+  <input type="button" value="Deploy" onclick="deploy()" />
 </html>
