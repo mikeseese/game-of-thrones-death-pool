@@ -386,54 +386,56 @@ window.addEventListener('load', function() {
     $("#pool_contract").val(contractAddress);
   }
 
-  // Checking if Web3 has been injected by the browser (Mist/MetaMask)
-  if (typeof web3 !== 'undefined') {
-    // Use Mist/MetaMask's provider
-    web3js = new Web3(web3.currentProvider);
-  } else {
-    console.log('No web3? You should consider trying MetaMask!')
-    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-    web3js = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-  }
+  window.ethereum.enable().then((accounts) => {
+    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
+    if (typeof web3 !== 'undefined') {
+      // Use Mist/MetaMask's provider
+      web3js = new Web3(web3.currentProvider);
+    } else {
+      console.log('No web3? You should consider trying MetaMask!')
+      // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+      web3js = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+    }
 
-  web3js.eth.defaultAccount = web3js.eth.accounts[0];
-  erc20 = web3js.eth.contract(erc20abi);
+    web3js.eth.defaultAccount = accounts[0];
+    erc20 = web3js.eth.contract(erc20abi);
 
-  $.getJSON("GOTDeathPool.json?v=5", (data) => {
-    artifact = data;
+    $.getJSON("GOTDeathPool.json?v=5", (data) => {
+      artifact = data;
 
-    contract = web3js.eth.contract(artifact.abi);
-  
-    // Now you can start your app & access web3 freely:
-    haveWeb3 = true;
-    contractChanged();
-  });
+      contract = web3js.eth.contract(artifact.abi);
+    
+      // Now you can start your app & access web3 freely:
+      haveWeb3 = true;
+      contractChanged();
+    });
 
-  for (let i = 0; i < characters.length; i++) {
-    if (i < characters.length - 2) {
-      $("#characters").append(
-        characterInsert
-        .replace(/CHARACTER_NAME/g, characters[i])
-        .replace(/CHARACTER_IDX/g, i)
-      );
-      $("#first_to_die").append(
-        characterOptionInsert
-        .replace(/CHARACTER_NAME/g, characters[i])
-        .replace(/CHARACTER_IDX/g, i)
-      );
-      $("#last_to_die").append(
+    for (let i = 0; i < characters.length; i++) {
+      if (i < characters.length - 2) {
+        $("#characters").append(
+          characterInsert
+          .replace(/CHARACTER_NAME/g, characters[i])
+          .replace(/CHARACTER_IDX/g, i)
+        );
+        $("#first_to_die").append(
+          characterOptionInsert
+          .replace(/CHARACTER_NAME/g, characters[i])
+          .replace(/CHARACTER_IDX/g, i)
+        );
+        $("#last_to_die").append(
+          characterOptionInsert
+          .replace(/CHARACTER_NAME/g, characters[i])
+          .replace(/CHARACTER_IDX/g, i)
+        );
+      }
+
+      $("#last_on_throne").append(
         characterOptionInsert
         .replace(/CHARACTER_NAME/g, characters[i])
         .replace(/CHARACTER_IDX/g, i)
       );
     }
-
-    $("#last_on_throne").append(
-      characterOptionInsert
-      .replace(/CHARACTER_NAME/g, characters[i])
-      .replace(/CHARACTER_IDX/g, i)
-    );
-  }
+  });
 });
 
 function getUrlParameter(name) {
