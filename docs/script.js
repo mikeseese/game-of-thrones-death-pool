@@ -259,12 +259,22 @@ function contractChanged() {
         $("#prediction").css("display", "none");
         $("#leaderboard_toggle").css("display", "block");
         $("#truth_toggle").css("display", "block");
-        $("#myPrediction").css("display", "block");
         $("#withdraw").css("display", "none");
 
         instance.predictions.call(web3js.eth.defaultAccount, (err, result) => {
-          console.log(err);
-          console.log(result);
+          if (!err && result[0] === true) {
+            $("#my_prediction").css("display", "block");
+            const firstToDie = result[1].toNumber();
+            const lastToDie = result[3].toNumber();
+            const lastOnThrone = result[4].toNumber();
+
+            $("#my_first_to_die_truth").text(characters[firstToDie]);
+            $("#my_last_to_die_truth").text(characters[lastToDie]);
+            $("#my_last_on_throne_truth").text(characters[lastOnThrone]);
+          }
+          else {
+            $("#my_prediction").css("display", "none");
+          }
         })
 
         instance.TruthContract.call((err, result) => {
