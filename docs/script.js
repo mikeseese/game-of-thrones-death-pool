@@ -271,6 +271,34 @@ function contractChanged() {
             $("#my_first_to_die_truth").text(characters[firstToDie]);
             $("#my_last_to_die_truth").text(characters[lastToDie]);
             $("#my_last_on_throne_truth").text(characters[lastOnThrone]);
+
+            const position = "0000000000000000000000000000000000000000000000000000000000000005";
+            const key = "0000000000000000000000" + web3js.eth.defaultAccount;
+
+            let slot = web3.sha3(key + position, { encoding: "hex" });
+            slot = new BN(slot.slice(2), 16);
+
+            web3js.eth.getStorageAt(instance.address, "0x" + slot.addn(1).toString(16), (err, result) => {
+              // dies
+              const dies = result.slice(2).match(/.{1,2}/g).map((s) => {
+                return s === "01";
+              }).reverse();
+              console.log("dies", dies);
+
+              web3js.eth.getStorageAt(instance.address, "0x" + slot.addn(2).toString(16), (err, result) => {
+                // deathEpisode
+                const deathEpisode = result.slice(2).match(/.{1,2}/g).map((s) => {
+                  return parseInt(s);
+                }).reverse();
+                console.log("deathEpisode", deathEpisode);
+
+                for (let i = 0; i < characters.length - 2; i++) {
+                  if (dies[i]) {
+                    $($(`#my_episode${deathEpisode[i]} ul`)[0]).append(deathInsert.replace(/CHARACTER_NAME/g, characters[i]));
+                  }
+                }
+              });
+            });
           }
           else {
             $("#my_prediction").css("display", "none");
