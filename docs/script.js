@@ -233,7 +233,15 @@ function contractChanged() {
     instance.haveStaked.call((err, result) => {
       if (!err && result === true) {
         $("#stake").css("display", "none");
-        $("#withdraw").css("display", "block");
+
+        instance._open.call((err, result) => {
+          if (!err && result === true) {
+            $("#withdraw").css("display", "block");
+          }
+          else {
+            $("#withdraw").css("display", "none");
+          }
+        });
       }
       else {
         $("#stake").css("display", "block");
@@ -251,7 +259,13 @@ function contractChanged() {
         $("#prediction").css("display", "none");
         $("#leaderboard_toggle").css("display", "block");
         $("#truth_toggle").css("display", "block");
+        $("#myPrediction").css("display", "block");
         $("#withdraw").css("display", "none");
+
+        instance.predictions.call(web3js.eth.defaultAccount, (err, result) => {
+          console.log(err);
+          console.log(result);
+        })
 
         instance.TruthContract.call((err, result) => {
           if (!err && result) {
