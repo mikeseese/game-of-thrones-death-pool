@@ -30,6 +30,8 @@ const leaderboardInsert = `<li>PLAYER_NAME: PLAYER_POINTS Points</li>`;
 const contestantInsert = `<option value="PLAYER_ADDRESS">PLAYER_NAME: PLAYER_POINTS Points</li>`;
 const deathInsert = `<li>CHARACTER_NAME</li>`;
 
+const players = {};
+
 function hex2a(hexx) {
   var hex = hexx.toString();//force conversion
   if (hex.startsWith("0x")) {
@@ -395,11 +397,13 @@ function contractChanged() {
                 }
               })
             });
-            data.push({
+            const playerAttributes = {
               points: points[i],
               address: addresses[i],
               name,
-            });
+            };
+            data.push(playerAttributes);
+            players[playerAttributes.address] = playerAttributes;
           }
           data.sort((a, b) => b.points.sub(a.points));
           for (let i = 0; i < data.length; i++) {
@@ -434,7 +438,7 @@ function contestantPredictionChange() {
   for (let i = 1; i <= 6; i++) {
     $($(`#my_episode${i} ul`)[0]).empty();
   }
-  $("#my_prediction_label")[0].innerText = address + "'s Prediction:"
+  $("#my_prediction_label")[0].innerText = players[address].name + "'s Prediction:"
   instance.predictions.call(address, (err, result) => {
     if (!err && result[0] === true) {
       $("#my_prediction").css("display", "block");
