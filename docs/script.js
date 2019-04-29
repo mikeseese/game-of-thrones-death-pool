@@ -27,6 +27,7 @@ let erc20Symbol;
 
 const characterOptionInsert = `<option value="CHARACTER_IDX">CHARACTER_NAME</option>`;
 const leaderboardInsert = `<li>PLAYER_NAME: PLAYER_POINTS Points</li>`;
+const contestantInsert = `<option value="PLAYER_ADDRESS">PLAYER_NAME: PLAYER_POINTS Points</li>`;
 const deathInsert = `<li>CHARACTER_NAME</li>`;
 
 function hex2a(hexx) {
@@ -378,6 +379,7 @@ function contractChanged() {
       }
       else {
         const leaderboard = $("#leaderboard ul")[0];
+        const contestants = $("#contestants")[0];
         if (leaderboard) {
           const data = [];
           const points = result["0"];
@@ -401,7 +403,13 @@ function contractChanged() {
           }
           data.sort((a, b) => b.points.sub(a.points));
           for (let i = 0; i < data.length; i++) {
-            $(leaderboard).append(leaderboardInsert.replace(/PLAYER_NAME/g, data[i].name).replace(/PLAYER_POINTS/g, data[i].points))
+            $(leaderboard).append(leaderboardInsert.replace(/PLAYER_NAME/g, data[i].name).replace(/PLAYER_POINTS/g, data[i].points));
+            $(contestants).append(
+              contestantInsert
+                .replace(/PLAYER_NAME/g, data[i].name)
+                .replace(/PLAYER_POINTS/g, data[i].points)
+                .replace(/PLAYER_ADDRESS/g, data[i].address)
+            );
           }
         }
       }
@@ -418,6 +426,54 @@ function contractChanged() {
     $("#share").css("display", "none");
     $("#stake").css("display", "none");
   }
+}
+
+function contestantPredictionChange() {
+  const contestant = $("#contestants").val();
+  const address = contestant === "me" ? web3js.eth.defaultAccount : contestant;
+  instance.predictions.call(address, (err, result) => {
+    if (!err && result[0] === true) {
+      $("#my_prediction").css("display", "block");
+      const firstToDie = result[1].toNumber();
+      const lastToDie = result[3].toNumber();
+      const lastOnThrone = result[4].toNumber();
+
+      $("#my_first_to_die_truth").text(characters[firstToDie]);
+      $("#my_last_to_die_truth").text(characters[lastToDie]);
+      $("#my_last_on_throne_truth").text(characters[lastOnThrone]);
+
+      const position = "0000000000000000000000000000000000000000000000000000000000000005";
+      const key = "0000000000000000000000" + address;
+
+      let slot = web3.sha3(key + position, { encoding: "hex" });
+      slot = new BN(slot.slice(2), 16);
+
+      web3js.eth.getStorageAt(instance.address, "0x" + slot.addn(1).toString(16), (err, result) => {
+        // dies
+        const dies = result.slice(2).match(/.{1,2}/g).map((s) => {
+          return s === "01";
+        }).reverse();
+        console.log("dies", dies);
+
+        web3js.eth.getStorageAt(instance.address, "0x" + slot.addn(2).toString(16), (err, result) => {
+          // deathEpisode
+          const deathEpisode = result.slice(2).match(/.{1,2}/g).map((s) => {
+            return parseInt(s);
+          }).reverse();
+          console.log("deathEpisode", deathEpisode);
+
+          for (let i = 0; i < characters.length - 2; i++) {
+            if (dies[i]) {
+              $($(`#my_episode${deathEpisode[i]} ul`)[0]).append(deathInsert.replace(/CHARACTER_NAME/g, characters[i]));
+            }
+          }
+        });
+      });
+    }
+    else {
+      $("#my_prediction").css("display", "none");
+    }
+  })
 }
 
 function toggleInstructions() {
