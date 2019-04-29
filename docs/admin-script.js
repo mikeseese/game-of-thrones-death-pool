@@ -94,7 +94,7 @@ window.addEventListener('load', function() {
 
   web3js.eth.defaultAccount = web3js.eth.accounts[0];
 
-  $.getJSON("GOTDeathPool.json?v=7", (data) => {
+  $.getJSON("GOTDeathPool.json?v=8", (data) => {
     artifact = data;
 
     contract = web3js.eth.contract(artifact.abi);
