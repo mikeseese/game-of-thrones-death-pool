@@ -286,14 +286,12 @@ function contractChanged() {
               const dies = result.slice(2).match(/.{1,2}/g).map((s) => {
                 return s === "01";
               }).reverse();
-              console.log("dies", dies);
 
               web3js.eth.getStorageAt(instance.address, "0x" + slot.addn(2).toString(16), (err, result) => {
                 // deathEpisode
                 const deathEpisode = result.slice(2).match(/.{1,2}/g).map((s) => {
                   return parseInt(s);
                 }).reverse();
-                console.log("deathEpisode", deathEpisode);
 
                 for (let i = 0; i < characters.length - 2; i++) {
                   if (dies[i]) {
@@ -461,14 +459,12 @@ function contestantPredictionChange() {
         const dies = result.slice(2).match(/.{1,2}/g).map((s) => {
           return s === "01";
         }).reverse();
-        console.log("dies", dies);
 
         web3js.eth.getStorageAt(instance.address, "0x" + slot.addn(2).toString(16), (err, result) => {
           // deathEpisode
           const deathEpisode = result.slice(2).match(/.{1,2}/g).map((s) => {
             return parseInt(s);
           }).reverse();
-          console.log("deathEpisode", deathEpisode);
 
           for (let i = 0; i < characters.length - 2; i++) {
             if (dies[i]) {
