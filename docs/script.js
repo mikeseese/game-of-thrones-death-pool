@@ -431,6 +431,10 @@ function contractChanged() {
 function contestantPredictionChange() {
   const contestant = $("#contestants").val();
   const address = contestant === "me" ? web3js.eth.defaultAccount : contestant;
+  for (let i = 1; i <= 6; i++) {
+    $($(`#my_episode${i} ul`)[0]).empty();
+  }
+  $("#my_prediction_label")[0].innerText = address + "'s Prediction:"
   instance.predictions.call(address, (err, result) => {
     if (!err && result[0] === true) {
       $("#my_prediction").css("display", "block");
